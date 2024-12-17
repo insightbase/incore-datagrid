@@ -1,0 +1,93 @@
+{templateType App\Component\Datagrid\DataGridTemplate}
+{snippet dagagrid}
+
+    <div class="card card-grid min-w-full">
+        <div class="card-header flex-wrap gap-2">
+            <h3 class="card-title font-medium text-sm">
+                {_'Zobrazuji %perPage% z %count% položek', 'perPage' => $paginator->getItemsPerPage(), 'count' => $paginator->getItemCount()}
+            </h3>
+            <div class="flex flex-wrap gap-2 lg:gap-5">
+                <div class="flex">
+                    <label class="input input-sm">
+                        <i class="ki-filled ki-magnifier">
+                        </i>
+                        <input n:if="$isEnabledGlobalSearch" placeholder="{_'Hledat'}" type="text" value="{$globalSearchText}" class="globalSearch" data-url="{link 'globalSearch!', 'xxxxxx'}" />
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="scrollable-x-auto">
+                <table class="table table-auto table-border">
+                    <thead>
+                    {foreach $columns as $column}
+                        <th class="min-w-[200px]">
+                            <a n:class="'sort ajax', $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? 'asc', $sortDir === App\Component\Datagrid\SortDirEnum::DESC->value ? 'desc'" n:href="setSort, $column->getColumn(), $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? App\Component\Datagrid\SortDirEnum::DESC->value : App\Component\Datagrid\SortDirEnum::ASC->value">
+                                <span class="sort-label text-gray-700 font-normal">
+                                    {$column->getLabel()}
+                                </span>
+                                <span class="sort-icon">
+                                </span>
+                            </a>
+                        </th>
+                    {/foreach}
+                    </thead>
+                    <tbody>
+                    {foreach $selection as $activeRow}
+                        <tr>
+                            {foreach $columns as $column}
+                                <td class="text-gray-800 font-normal">
+                                    {$column->getRow($activeRow)}
+                                </td>
+                            {/foreach}
+                            <td>
+                                <div class="menu" data-menu="true">
+                                    <div class="menu-item" data-menu-item-offset="0, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
+                                        <button class="menu-toggle btn btn-sm btn-icon btn-light btn-clear">
+                                            <i class="ki-filled ki-dots-vertical">
+                                            </i>
+                                        </button>
+                                        <div class="menu-dropdown menu-default w-full max-w-[175px]" data-menu-dismiss="true">
+                                            <div class="menu-item" n:foreach="$menus as $menu">
+                                                <a class="menu-link" href="{plink $menu->plink, $activeRow['id']}">
+                                                    <span class="menu-title">
+                                                        {$menu->label}
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer justify-center md:justify-between flex-col md:flex-row gap-5 text-gray-600 text-2sm font-medium">
+                <div class="flex items-center gap-2 order-2 md:order-1">
+                    Show
+                    <select class="select select-sm w-16" data-datatable-size="true" name="perpage"><option value="5">5</option><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="50">50</option></select>
+                    per page
+                </div>
+                <div class="flex items-center gap-4 order-1 md:order-2">
+                    <span data-datatable-info="true">{_'%itemFrom%-%itemTo% z %count%', 'itemFrom' => $paginator->getOffset() + 1, 'itemTo' => ($paginator->getOffset() + $paginator->getItemsPerPage() < $paginator->getItemCount() ? $paginator->getOffset() + $paginator->getItemsPerPage() : $paginator->getItemCount()), 'count' =>$paginator->getItemCount()}</span>
+                    <div class="pagination">
+                        <div class="pagination">
+                            <a n:href="setPage, $paginator->getPage() - 1" n:class="'btn ajax', $paginator->isFirst() ? 'disabled'" {if $paginator->isFirst()}disabled=""{/if}>
+                                <i class="ki-outline ki-black-left rtl:transform rtl:rotate-180"></i>
+                            </a>
+                            {for $interalPage = 1; $interalPage <= $paginator->getPageCount(); $interalPage++}
+                                <a n:href="setPage, $interalPage" n:class="'btn', $interalPage === $paginator->getPage() ? 'active disabled'" {if $interalPage === $paginator->getPage()}disabled=""{/if}>{$interalPage}</a>
+                            {/for}
+                            <a n:href="setPage, $paginator->getPage() + 1" n:class="'btn ajax', $paginator->isLast() ? 'disabled'" {if $paginator->isLast()}disabled=""{/if}>
+                                <i class="ki-outline ki-black-right rtl:transform rtl:rotate-180"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/snippet}

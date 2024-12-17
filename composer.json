@@ -1,0 +1,22 @@
+{
+    "version": "0.0.1",
+    "name": "incore/datagrid",
+    "description": "Datagrid for inCore system",
+    "autoload": {
+        "classmap": ["src/"]
+    },
+    "authors": [
+        {
+            "name": "insight base s.r.o.",
+            "email": "info@insightbase.cz"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">= 8.2",
+        "nette/database": "^3.2",
+        "nette/application": "^3.2"
+    },
+    "repositories": [
+    ]
+}
