@@ -66,6 +66,8 @@
                 </table>
             </div>
             <div class="card-footer justify-center md:justify-between flex-col md:flex-row gap-5 text-gray-600 text-2sm font-medium">
+                <div class="flex items-center gap-2 order-2 md:order-1">
+                </div>
                 <div class="flex items-center gap-4 order-1 md:order-2">
                     <span data-datatable-info="true">{_'%itemFrom%-%itemTo% z %count%', 'itemFrom' => $paginator->getOffset() + 1, 'itemTo' => ($paginator->getOffset() + $paginator->getItemsPerPage() < $paginator->getItemCount() ? $paginator->getOffset() + $paginator->getItemsPerPage() : $paginator->getItemCount()), 'count' =>$paginator->getItemCount()}</span>
                     <div class="pagination">
