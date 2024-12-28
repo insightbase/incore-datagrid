@@ -4,7 +4,7 @@
     <div class="card card-grid min-w-full">
         <div class="card-header flex-wrap gap-2">
             <h3 class="card-title font-medium text-sm">
-                {_'Zobrazuji %perPage% z %count% položek', 'perPage' => $paginator->getItemsPerPage(), 'count' => $paginator->getItemCount()}
+                {_'Zobrazuji %perPage% z %count% položek', 'perPage' => $paginator->getLastItemOnPage(), 'count' => $paginator->getItemCount()}
             </h3>
             <div class="flex flex-wrap gap-2 lg:gap-5">
                 <div class="flex">

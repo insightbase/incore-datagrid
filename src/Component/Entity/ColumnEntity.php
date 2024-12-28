@@ -7,6 +7,10 @@ use App\Component\Datagrid\SortDirEnum;
 class ColumnEntity
 {
     private bool $enableSearchGlobal = false;
+    /**
+     * @var null|callable
+     */
+    private $getRowCallback = null;
 
     public function __construct(
         public string $column,
@@ -15,6 +19,16 @@ class ColumnEntity
         public SortDirEnum $sortDir = SortDirEnum::ASC,
     )
     {
+    }
+
+    public function getRowCallback():?callable
+    {
+        return $this->getRowCallback;
+    }
+
+    public function setGetRowCallback(callable $getRowCallback):self{
+        $this->getRowCallback = $getRowCallback;
+        return $this;
     }
 
     public function isEnableSearchGlobal(): bool

@@ -67,13 +67,16 @@ class DataGrid extends Control
     public function init():void
     {
         foreach($this->dataGridEntity->getColumns() as $column){
-            $this->columns[] = $this->columnFactory->create($column->column, $column->label);
+            $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label);
             if($column->sort && $this->sort === ''){
                 $this->sort = $column->column;
                 $this->sortDir = $column->sortDir->value;
             }
             if($column->isEnableSearchGlobal()){
                 $this->enableGlobalSearch = true;
+            }
+            if($column->getRowCallback() !== null){
+                $columnGrid->setGetRowCallback($column->getRowCallback());
             }
         }
 
