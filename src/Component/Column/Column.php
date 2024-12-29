@@ -4,13 +4,16 @@ namespace App\Component\Datagrid\Column;
 
 use Nette\Application\UI\Control;
 use Nette\Database\Table\ActiveRow;
+use Nette\Utils\DateTime;
 
 class Column extends Control
 {
     /**
      * @var callable
      */
-    private $getRowCallback;
+    protected $getRowCallback;
+    private bool $enabledSort = true;
+    private bool $noEscape = false;
 
     public function __construct(
         private readonly string $column,
@@ -41,6 +44,28 @@ class Column extends Control
     public function setGetRowCallback(callable $getRowCallback): self
     {
         $this->getRowCallback = $getRowCallback;
+        return $this;
+    }
+
+    public function isEnabledSort(): bool
+    {
+        return $this->enabledSort;
+    }
+
+    public function setEnabledSort(bool $enabledSort): self
+    {
+        $this->enabledSort = $enabledSort;
+        return $this;
+    }
+
+    public function isNoEscape(): bool
+    {
+        return $this->noEscape;
+    }
+
+    public function setNoEscape(bool $noEscape): self
+    {
+        $this->noEscape = $noEscape;
         return $this;
     }
 }

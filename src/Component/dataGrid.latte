@@ -23,11 +23,11 @@
                     <thead>
                     {foreach $columns as $column}
                         <th class="min-w-[200px]">
-                            <a n:class="'sort ajax', $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? 'asc', $sortDir === App\Component\Datagrid\SortDirEnum::DESC->value ? 'desc'" n:href="setSort, $column->getColumn(), $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? App\Component\Datagrid\SortDirEnum::DESC->value : App\Component\Datagrid\SortDirEnum::ASC->value">
+                            <a n:tag-if="$column->isEnabledSort()" n:class="'sort ajax', $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? 'asc', $sortDir === App\Component\Datagrid\SortDirEnum::DESC->value ? 'desc'" n:href="setSort, $column->getColumn(), $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? App\Component\Datagrid\SortDirEnum::DESC->value : App\Component\Datagrid\SortDirEnum::ASC->value">
                                 <span class="sort-label text-gray-700 font-normal">
                                     {$column->getLabel()}
                                 </span>
-                                <span class="sort-icon">
+                                <span class="sort-icon" n:if="$column->isEnabledSort() && $column->getColumn() === $sort">
                                 </span>
                             </a>
                         </th>
@@ -38,7 +38,11 @@
                         <tr>
                             {foreach $columns as $column}
                                 <td class="text-gray-800 font-normal">
-                                    {$column->getRow($activeRow)}
+                                    {if $column->isNoEscape()}
+                                        {$column->getRow($activeRow)|noescape}
+                                    {else}
+                                        {$column->getRow($activeRow)}
+                                    {/if}
                                 </td>
                             {/foreach}
                             <td>
@@ -51,6 +55,9 @@
                                         <div class="menu-dropdown menu-default w-full max-w-[175px]" data-menu-dismiss="true">
                                             <div class="menu-item" n:foreach="$menus as $menu">
                                                 <a class="menu-link" href="{plink $menu->plink, $activeRow['id']}">
+                                                    <span class="menu-icon" n:if="$menu->getIcon() !== null">
+                                                        <i class="{$menu->getIcon()}"></i>
+                                                    </span>
                                                     <span class="menu-title">
                                                         {$menu->label}
                                                     </span>

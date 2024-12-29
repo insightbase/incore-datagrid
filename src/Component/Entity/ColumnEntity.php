@@ -11,6 +11,7 @@ class ColumnEntity
      * @var null|callable
      */
     private $getRowCallback = null;
+    private bool $enabledSort = true;
 
     public function __construct(
         public string $column,
@@ -19,6 +20,18 @@ class ColumnEntity
         public SortDirEnum $sortDir = SortDirEnum::ASC,
     )
     {
+    }
+
+    public function disableSort():self
+    {
+        $this->enabledSort = false;
+        return $this;
+    }
+
+    public function enableSort():self
+    {
+        $this->enabledSort = true;
+        return $this;
     }
 
     public function getRowCallback():?callable
@@ -40,5 +53,10 @@ class ColumnEntity
     {
         $this->enableSearchGlobal = $enableSearchGlobal;
         return $this;
+    }
+
+    public function isEnabledSort(): bool
+    {
+        return $this->enabledSort;
     }
 }

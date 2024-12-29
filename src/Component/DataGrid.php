@@ -4,6 +4,7 @@ namespace App\Component\Datagrid;
 
 use App\Component\Datagrid\Column\Column;
 use App\Component\Datagrid\Column\ColumnFactory;
+use App\Component\Datagrid\Entity\BooleanColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Menu\MenuFactory;
 use Nette\Application\Attributes\Persistent;
@@ -67,7 +68,9 @@ class DataGrid extends Control
     public function init():void
     {
         foreach($this->dataGridEntity->getColumns() as $column){
-            $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label);
+            $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label)
+                ->setEnabledSort($column->isEnabledSort())
+            ;
             if($column->sort && $this->sort === ''){
                 $this->sort = $column->column;
                 $this->sortDir = $column->sortDir->value;
@@ -78,10 +81,15 @@ class DataGrid extends Control
             if($column->getRowCallback() !== null){
                 $columnGrid->setGetRowCallback($column->getRowCallback());
             }
+            if($column instanceof BooleanColumnEntity){
+                $columnGrid->setNoEscape(true);
+            }
         }
 
         foreach($this->dataGridEntity->getMenus() as $menu){
-            $this->menus[] = $this->menuFactory->create($menu->label, $menu->plink);
+            $this->menus[] = $this->menuFactory->create($menu->label, $menu->plink)
+                ->setIcon($menu->getIcon())
+            ;
         }
     }
 
