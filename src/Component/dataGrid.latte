@@ -6,12 +6,12 @@
             <h3 class="card-title font-medium text-sm">
                 {_'Zobrazuji %perPage% z %count% položek', 'perPage' => $paginator->getLastItemOnPage(), 'count' => $paginator->getItemCount()}
             </h3>
-            <div class="flex flex-wrap gap-2 lg:gap-5">
+            <div class="flex flex-wrap gap-2 lg:gap-5" n:if="$isEnabledGlobalSearch">
                 <div class="flex">
                     <label class="input input-sm">
                         <i class="ki-filled ki-magnifier">
                         </i>
-                        <input n:if="$isEnabledGlobalSearch" placeholder="{_'Hledat'}" type="text" value="{$globalSearchText}" class="globalSearch" data-url="{link 'globalSearch!', 'xxxxxx'}" />
+                        <input placeholder="{_'Hledat'}" type="text" value="{$globalSearchText}" class="globalSearch" data-url="{link 'globalSearch!', 'xxxxxx'}" />
                     </label>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                                     {/if}
                                 </td>
                             {/foreach}
-                            <td>
+                            <td n:if="count($menus) > 0">
                                 <div class="menu" data-menu="true">
                                     <div class="menu-item" data-menu-item-offset="0, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
                                         <button class="menu-toggle btn btn-sm btn-icon btn-light btn-clear">

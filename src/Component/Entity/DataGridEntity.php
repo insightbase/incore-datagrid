@@ -2,6 +2,8 @@
 
 namespace App\Component\Datagrid\Entity;
 
+use Nette\Database\Table\Selection;
+
 class DataGridEntity
 {
     /**
@@ -13,6 +15,17 @@ class DataGridEntity
      * @var array<MenuEntity>
      */
     private array $menus = [];
+    /**
+     * @var callable
+     */
+    private $getCountCallback;
+
+    public function __construct()
+    {
+        $this->getCountCallback = function(Selection $model): int{
+            return $model->count('*');
+        };
+    }
 
     public function addMenu(MenuEntity $menuEntity):self
     {
@@ -45,5 +58,16 @@ class DataGridEntity
     public function getMenus(): array
     {
         return $this->menus;
+    }
+
+    public function getGetCountCallback(): callable|\Closure
+    {
+        return $this->getCountCallback;
+    }
+
+    public function setGetCountCallback(callable|\Closure $getCountCallback): self
+    {
+        $this->getCountCallback = $getCountCallback;
+        return $this;
     }
 }

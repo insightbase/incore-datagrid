@@ -107,11 +107,16 @@ class DataGrid extends Control
                 }
             }
             if(!empty($query)){
-                $this->selection->where(implode(' OR ', $query), $params);
+                if(count($query) === 1){
+                    $this->selection->where($query[0], $params[0]);
+                }else {
+                    $this->selection->where(implode(' OR ', $query), $params);
+                }
             }
         }
 
-        $itemsCount = (clone $this->selection)->count('*');
+        $itemsCountCallback = $this->dataGridEntity->getGetCountCallback();
+        $itemsCount = $itemsCountCallback(clone $this->selection);
 
         if($this->sort !== ''){
             $this->selection->order($this->sort . ' ' . $this->sortDir);
