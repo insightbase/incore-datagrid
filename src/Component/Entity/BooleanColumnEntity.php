@@ -19,5 +19,8 @@ class BooleanColumnEntity extends ColumnEntity
             }
             return Html::el('i')->class($class);
         });
+        $this->setGetRowExportCallback(function(ActiveRow $activeRow):string{
+            return (int)$activeRow[$this->column];
+        });
     }
 }

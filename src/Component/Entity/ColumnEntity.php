@@ -11,6 +11,10 @@ class ColumnEntity
      * @var null|callable
      */
     private $getRowCallback = null;
+    /**
+     * @var null|callable
+     */
+    private $getRowExportCallback = null;
     private bool $enabledSort = true;
 
     public function __construct(
@@ -58,5 +62,16 @@ class ColumnEntity
     public function isEnabledSort(): bool
     {
         return $this->enabledSort;
+    }
+
+    public function getGetRowExportCallback(): ?callable
+    {
+        return $this->getRowExportCallback;
+    }
+
+    public function setGetRowExportCallback(?callable $getRowExportCallback): self
+    {
+        $this->getRowExportCallback = $getRowExportCallback;
+        return $this;
     }
 }

@@ -12,6 +12,10 @@ class Column extends Control
      * @var callable
      */
     protected $getRowCallback;
+    /**
+     * @var callable
+     */
+    protected $getRowExportCallback;
     private bool $enabledSort = true;
     private bool $noEscape = false;
 
@@ -23,6 +27,14 @@ class Column extends Control
         $this->getRowCallback = function(ActiveRow $activeRow):string{
             return (string)$activeRow[$this->column];
         };
+        $this->getRowExportCallback = function(ActiveRow $activeRow):string{
+            return (string)$activeRow[$this->column];
+        };
+    }
+
+    public function getRowExport(ActiveRow $activeRow):string{
+        $callback = $this->getRowExportCallback;
+        return $callback($activeRow);
     }
 
     public function getRow(ActiveRow $activeRow): string
@@ -67,5 +79,15 @@ class Column extends Control
     {
         $this->noEscape = $noEscape;
         return $this;
+    }
+
+    public function getGetRowExportCallback(): callable|\Closure
+    {
+        return $this->getRowExportCallback;
+    }
+
+    public function setGetRowExportCallback(callable|\Closure $getRowExportCallback): void
+    {
+        $this->getRowExportCallback = $getRowExportCallback;
     }
 }

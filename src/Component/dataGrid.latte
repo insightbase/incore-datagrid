@@ -5,6 +5,7 @@
         <div class="card-header flex-wrap gap-2">
             <h3 class="card-title font-medium text-sm">
                 {_'Zobrazuji %perPage% z %count% položek', 'perPage' => $paginator->getLastItemOnPage(), 'count' => $paginator->getItemCount()}
+                <a n:href="export" class="btn btn-primary">{_'Export'}</a>
             </h3>
             <div class="flex flex-wrap gap-2 lg:gap-5" n:if="$isEnabledGlobalSearch">
                 <div class="flex">

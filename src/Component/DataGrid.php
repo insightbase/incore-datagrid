@@ -7,11 +7,16 @@ use App\Component\Datagrid\Column\ColumnFactory;
 use App\Component\Datagrid\Entity\BooleanColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Menu\MenuFactory;
+use App\UI\Accessory\ParameterBag;
+use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Persistent;
+use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Control;
 use Nette\Database\Table\Selection;
 use Nette\Localization\Translator;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Paginator;
+use PhpParser\Node\Param;
 
 /**
  * @property-read DataGridTemplate $template
@@ -40,8 +45,40 @@ class DataGrid extends Control
         private readonly DataGridEntity $dataGridEntity,
         private readonly ColumnFactory  $columnFactory,
         private readonly MenuFactory    $menuFactory,
+        private readonly ParameterBag   $parameterBag,
     )
     {
+    }
+
+    private function iconv(array $data):array{
+        foreach($data as $key => $value){
+            $data[$key] = iconv('UTF-8', 'WINDOWS-1250', $value);
+        }
+        return $data;
+    }
+
+    #[NoReturn] public function handleExport():void{
+        $this->init();
+
+        $fileName = 'export-' . time() . '.csv';
+        FileSystem::createDir($this->parameterBag->tempDir . '/export');
+        $handle = fopen($this->parameterBag->tempDir . '/export/' . $fileName, 'w');
+        $columns = [];
+        foreach($this->columns as $column){
+            $columns[] = $column->getLabel();
+        }
+        fputcsv($handle, $this->iconv($columns));
+        foreach($this->selection as $row){
+            $data = [];
+            foreach($this->columns as $column){
+                $data[] = $column->getRowExport($row);
+            }
+            fputcsv($handle, $data);
+        }
+        fclose($handle);
+
+        $response = new FileResponse($this->parameterBag->tempDir . '/export/' . $fileName);
+        $this->getPresenter()->sendResponse($response);
     }
 
     public function handleGlobalSearch(string $search):void
@@ -81,6 +118,9 @@ class DataGrid extends Control
             if($column->getRowCallback() !== null){
                 $columnGrid->setGetRowCallback($column->getRowCallback());
             }
+            if($column->getGetRowExportCallback() !== null){
+                $columnGrid->setGetRowExportCallback($column->getGetRowExportCallback());
+            }
             if($column instanceof BooleanColumnEntity){
                 $columnGrid->setNoEscape(true);
             }
@@ -91,12 +131,11 @@ class DataGrid extends Control
                 ->setIcon($menu->getIcon())
             ;
         }
+
+        $this->initModel();
     }
 
-    public function render():void
-    {
-        $this->init();
-
+    private function initModel():void{
         if($this->globalSearch !== ''){
             $query = [];
             $params = [];
@@ -114,6 +153,11 @@ class DataGrid extends Control
                 }
             }
         }
+    }
+
+    public function render():void
+    {
+        $this->init();
 
         $itemsCountCallback = $this->dataGridEntity->getGetCountCallback();
         $itemsCount = $itemsCountCallback(clone $this->selection);
