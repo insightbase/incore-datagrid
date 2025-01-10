@@ -2,6 +2,7 @@
 
 namespace App\Component\Datagrid\Column;
 
+use App\Component\Datagrid\Entity\ColumnEntity;
 use Nette\Application\UI\Control;
 use Nette\Database\Table\ActiveRow;
 use Nette\Utils\DateTime;
@@ -20,8 +21,10 @@ class Column extends Control
     private bool $noEscape = false;
 
     public function __construct(
-        private readonly string $column,
-        private readonly string $label,
+        private readonly string       $column,
+        private readonly string       $label,
+        private readonly ColumnEntity $columnEntity,
+        private readonly string       $id,
     )
     {
         $this->getRowCallback = function(ActiveRow $activeRow):string{
@@ -89,5 +92,15 @@ class Column extends Control
     public function setGetRowExportCallback(callable|\Closure $getRowExportCallback): void
     {
         $this->getRowExportCallback = $getRowExportCallback;
+    }
+
+    public function getColumnEntity(): ColumnEntity
+    {
+        return $this->columnEntity;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 }

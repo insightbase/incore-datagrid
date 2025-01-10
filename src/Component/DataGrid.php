@@ -85,13 +85,13 @@ class DataGrid extends Control
     {
         $this->globalSearch = $search;
         $this->page = 1;
-        $this->redrawControl();
+        $this->redrawControl('dataGrid');
     }
 
     public function handleSetPage(int $page):void
     {
         $this->page = $page;
-        $this->redrawControl();
+        $this->redrawControl('dataGrid');
     }
 
     public function handleSetSort(string $column, string $sortDir):void
@@ -99,13 +99,37 @@ class DataGrid extends Control
         $this->sort = $column;
         $this->sortDir = $sortDir;
         $this->page = 1;
-        $this->redrawControl();
+        $this->redrawControl('dataGrid');
+    }
+
+    private function getColumnById(string $id):?Column
+    {
+        foreach($this->columns as $column){
+            if($column->getId() === $id){
+                return $column;
+            }
+        }
+        return null;
+    }
+
+    public function handleColumnClick(string $columnId, int $id):void
+    {
+        $this->init();
+
+        $column = $this->getColumnById($columnId);
+        if($column !== null && $column->getColumnEntity() instanceof BooleanColumnEntity){
+            ($column->getColumnEntity()->getOnClickCallback())($id);
+            $this->redrawControl('body');
+        }else {
+            $this->getPresenter()->flashMessage($this->translator->translate('flash_badLink'));
+            $this->getPresenter()->redrawControl('flashes');
+        }
     }
 
     public function init():void
     {
         foreach($this->dataGridEntity->getColumns() as $column){
-            $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label)
+            $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label, $column, 'column_' . count($this->columns))
                 ->setEnabledSort($column->isEnabledSort())
             ;
             if($column->sort && $this->sort === ''){
@@ -180,6 +204,7 @@ class DataGrid extends Control
         $this->template->isEnabledGlobalSearch = $this->enableGlobalSearch;
         $this->template->menus = $this->menus;
         $this->template->globalSearchText = $this->globalSearch;
+        $this->template->isEnabledExport = $this->dataGridEntity->isEnableExport();
 
         $this->template->setTranslator($this->translator);
         $this->template->setFile(__DIR__ . '/dataGrid.latte');

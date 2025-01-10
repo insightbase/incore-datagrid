@@ -8,6 +8,11 @@ use Nette\Utils\Html;
 
 class BooleanColumnEntity extends ColumnEntity
 {
+    /**
+     * @var ?callback
+     */
+    private $onClickCallback = null;
+
     public function __construct(string $column, string $label, bool $sort = false, SortDirEnum $sortDir = SortDirEnum::ASC)
     {
         parent::__construct($column, $label, $sort, $sortDir);
@@ -22,5 +27,16 @@ class BooleanColumnEntity extends ColumnEntity
         $this->setGetRowExportCallback(function(ActiveRow $activeRow):string{
             return (int)$activeRow[$this->column];
         });
+    }
+
+    public function getOnClickCallback(): ?callable
+    {
+        return $this->onClickCallback;
+    }
+
+    public function setOnClickCallback(?callable $onClickCallback): self
+    {
+        $this->onClickCallback = $onClickCallback;
+        return $this;
     }
 }

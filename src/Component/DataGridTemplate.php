@@ -24,4 +24,5 @@ class DataGridTemplate extends Template
      */
     public array $menus;
     public string $globalSearchText;
+    public bool $isEnabledExport;
 }

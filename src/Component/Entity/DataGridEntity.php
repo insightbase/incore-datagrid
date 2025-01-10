@@ -19,6 +19,7 @@ class DataGridEntity
      * @var callable
      */
     private $getCountCallback;
+    private bool $enableExport = false;
 
     public function __construct()
     {
@@ -68,6 +69,17 @@ class DataGridEntity
     public function setGetCountCallback(callable|\Closure $getCountCallback): self
     {
         $this->getCountCallback = $getCountCallback;
+        return $this;
+    }
+
+    public function isEnableExport(): bool
+    {
+        return $this->enableExport;
+    }
+
+    public function setEnableExport(bool $enableExport = true): self
+    {
+        $this->enableExport = $enableExport;
         return $this;
     }
 }

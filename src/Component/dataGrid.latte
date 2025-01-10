@@ -1,18 +1,18 @@
 {templateType App\Component\Datagrid\DataGridTemplate}
-{snippet dagagrid}
+{snippet dataGrid}
 
     <div class="card card-grid min-w-full">
         <div class="card-header flex-wrap gap-2">
             <h3 class="card-title font-medium text-sm">
-                {_'Zobrazuji %perPage% z %count% položek', 'perPage' => $paginator->getLastItemOnPage(), 'count' => $paginator->getItemCount()}
-                <a n:href="export" class="btn btn-primary">{_'Export'}</a>
+                {_'paginator_show %perPage% from %count%', 'perPage' => $paginator->getLastItemOnPage(), 'count' => $paginator->getItemCount()}
+                <a n:href="export" n:if="$isEnabledExport" class="btn btn-primary">{_'button_export'}</a>
             </h3>
             <div class="flex flex-wrap gap-2 lg:gap-5" n:if="$isEnabledGlobalSearch">
                 <div class="flex">
                     <label class="input input-sm">
                         <i class="ki-filled ki-magnifier">
                         </i>
-                        <input placeholder="{_'Hledat'}" type="text" value="{$globalSearchText}" class="globalSearch" data-url="{link 'globalSearch!', 'xxxxxx'}" />
+                        <input placeholder="{_'input_search'}" type="text" value="{$globalSearchText}" class="globalSearch" data-url="{link 'globalSearch!', 'xxxxxx'}" />
                     </label>
                 </div>
             </div>
@@ -34,18 +34,22 @@
                         </th>
                     {/foreach}
                     </thead>
-                    <tbody>
+                    <tbody n:snippet="body">
                     {foreach $selection as $activeRow}
                         <tr>
-                            {foreach $columns as $column}
-                                <td class="text-gray-800 font-normal">
-                                    {if $column->isNoEscape()}
-                                        {$column->getRow($activeRow)|noescape}
-                                    {else}
-                                        {$column->getRow($activeRow)}
-                                    {/if}
-                                </td>
-                            {/foreach}
+
+                                {foreach $columns as $column}
+                                    <td class="text-gray-800 font-normal">
+                                        <a n:href="columnClick, $column->getId(), $activeRow['id']" n:tag-if="$column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null" class="ajax" data-naja-history="off">
+                                            {if $column->isNoEscape()}
+                                                {$column->getRow($activeRow)|noescape}
+                                            {else}
+                                                {$column->getRow($activeRow)}
+                                            {/if}
+                                        </a>
+                                    </td>
+                                {/foreach}
+
                             <td n:if="count($menus) > 0">
                                 <div class="menu" data-menu="true">
                                     <div class="menu-item" data-menu-item-offset="0, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">

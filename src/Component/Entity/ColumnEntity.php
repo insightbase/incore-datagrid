@@ -53,7 +53,7 @@ class ColumnEntity
         return $this->enableSearchGlobal;
     }
 
-    public function setEnableSearchGlobal(bool $enableSearchGlobal): self
+    public function setEnableSearchGlobal(bool $enableSearchGlobal = true): self
     {
         $this->enableSearchGlobal = $enableSearchGlobal;
         return $this;
