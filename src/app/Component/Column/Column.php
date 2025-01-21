@@ -35,6 +35,10 @@ class Column extends Control
         };
     }
 
+    public function getInlineEditId(ActiveRow $row):string{
+        return ($this->getColumnEntity()->getGetInlineEditIdCallback())($row);
+    }
+
     public function getRowExport(ActiveRow $activeRow):string{
         $callback = $this->getRowExportCallback;
         return $callback($activeRow);

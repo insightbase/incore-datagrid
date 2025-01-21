@@ -4,6 +4,7 @@ namespace App\Component\Datagrid;
 
 use App\Component\Datagrid\Column\Column;
 use App\Component\Datagrid\Column\ColumnFactory;
+use App\Component\Datagrid\Dto\ReturnInlineEditCallback;
 use App\Component\Datagrid\Entity\BooleanColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Menu\MenuFactory;
@@ -38,6 +39,7 @@ class DataGrid extends Control
     public string $globalSearch = '';
     private bool $enableGlobalSearch = false;
     private array $menus = [];
+    private bool $isInit = false;
 
     public function __construct(
         private readonly Selection      $selection,
@@ -112,51 +114,80 @@ class DataGrid extends Control
         return null;
     }
 
+    public function handleInlineEdit(string $columnId, string $id, string $value):void
+    {
+        $this->init();
+        $column = $this->getColumnById($columnId);
+        if($column !== null && $column->getColumnEntity()->getInlineEditCallback() !== null){
+            try {
+                $dto = ($column->getColumnEntity()->getInlineEditCallback())($id, $value);
+                if(!($dto instanceof ReturnInlineEditCallback)){
+                    $dto = new ReturnInlineEditCallback();
+                }
+                if($dto->redraw) {
+                    $this->redrawControl('dataGrid');
+                }
+            }catch(\Exception $e){
+                $this->getPresenter()->flashMessage($e->getMessage(), 'error');
+            }
+        }else{
+            $this->getPresenter()->flashMessage($this->translator->translate('flash_badLink'), 'error');
+        }
+        $this->getPresenter()->redrawControl('flashes');
+    }
+
     public function handleColumnClick(string $columnId, int $id):void
     {
         $this->init();
 
         $column = $this->getColumnById($columnId);
         if($column !== null && $column->getColumnEntity() instanceof BooleanColumnEntity){
-            ($column->getColumnEntity()->getOnClickCallback())($id);
-            $this->redrawControl('body');
+            try {
+                ($column->getColumnEntity()->getOnClickCallback())($id);
+                $this->redrawControl('dataGrid');
+            }catch(\Exception $e){
+                $this->getPresenter()->flashMessage($e->getMessage(), 'error');
+            }
+
         }else {
-            $this->getPresenter()->flashMessage($this->translator->translate('flash_badLink'));
-            $this->getPresenter()->redrawControl('flashes');
+            $this->getPresenter()->flashMessage($this->translator->translate('flash_badLink'), 'error');
         }
+        $this->getPresenter()->redrawControl('flashes');
     }
 
     public function init():void
     {
-        foreach($this->dataGridEntity->getColumns() as $column){
-            $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label, $column, 'column_' . count($this->columns))
-                ->setEnabledSort($column->isEnabledSort())
-            ;
-            if($column->sort && $this->sort === ''){
-                $this->sort = $column->column;
-                $this->sortDir = $column->sortDir->value;
+        if(!$this->isInit) {
+            foreach ($this->dataGridEntity->getColumns() as $column) {
+                $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label, $column, 'column_' . count($this->columns))
+                    ->setEnabledSort($column->isEnabledSort());
+                if ($column->sort && $this->sort === '') {
+                    $this->sort = $column->column;
+                    $this->sortDir = $column->sortDir->value;
+                }
+                if ($column->isEnableSearchGlobal()) {
+                    $this->enableGlobalSearch = true;
+                }
+                if ($column->getRowCallback() !== null) {
+                    $columnGrid->setGetRowCallback($column->getRowCallback());
+                }
+                if ($column->getGetRowExportCallback() !== null) {
+                    $columnGrid->setGetRowExportCallback($column->getGetRowExportCallback());
+                }
+                if ($column instanceof BooleanColumnEntity) {
+                    $columnGrid->setNoEscape(true);
+                }
             }
-            if($column->isEnableSearchGlobal()){
-                $this->enableGlobalSearch = true;
-            }
-            if($column->getRowCallback() !== null){
-                $columnGrid->setGetRowCallback($column->getRowCallback());
-            }
-            if($column->getGetRowExportCallback() !== null){
-                $columnGrid->setGetRowExportCallback($column->getGetRowExportCallback());
-            }
-            if($column instanceof BooleanColumnEntity){
-                $columnGrid->setNoEscape(true);
-            }
-        }
 
-        foreach($this->dataGridEntity->getMenus() as $menu){
-            $this->menus[] = $this->menuFactory->create($menu->label, $menu->plink)
-                ->setIcon($menu->getIcon())
-            ;
-        }
+            foreach ($this->dataGridEntity->getMenus() as $menu) {
+                $this->menus[] = $this->menuFactory->create($menu->label, $menu->plink)
+                    ->setIcon($menu->getIcon());
+            }
 
-        $this->initModel();
+            $this->initModel();
+
+            $this->isInit = true;
+        }
     }
 
     private function initModel():void{

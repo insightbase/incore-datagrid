@@ -3,6 +3,7 @@
 namespace App\Component\Datagrid\Entity;
 
 use App\Component\Datagrid\SortDirEnum;
+use Nette\Database\Table\ActiveRow;
 
 class ColumnEntity
 {
@@ -16,6 +17,15 @@ class ColumnEntity
      */
     private $getRowExportCallback = null;
     private bool $enabledSort = true;
+    /**
+     * @var ?callable
+     */
+    private $inlineEditCallback = null;
+    /**
+     * @var callable
+     */
+    private $getInlineEditIdCallback;
+    private ?int $truncate = null;
 
     public function __construct(
         public string $column,
@@ -24,6 +34,9 @@ class ColumnEntity
         public SortDirEnum $sortDir = SortDirEnum::ASC,
     )
     {
+        $this->getInlineEditIdCallback = function(ActiveRow $row):int{
+            return $row['id'];
+        };
     }
 
     public function disableSort():self
@@ -72,6 +85,39 @@ class ColumnEntity
     public function setGetRowExportCallback(?callable $getRowExportCallback): self
     {
         $this->getRowExportCallback = $getRowExportCallback;
+        return $this;
+    }
+
+    public function getInlineEditCallback(): ?callable
+    {
+        return $this->inlineEditCallback;
+    }
+
+    public function setInlineEditCallback(?callable $inlineEditCallback): self
+    {
+        $this->inlineEditCallback = $inlineEditCallback;
+        return $this;
+    }
+
+    public function getGetInlineEditIdCallback(): callable
+    {
+        return $this->getInlineEditIdCallback;
+    }
+
+    public function setGetInlineEditIdCallback(callable $getInlineEditIdCallback): self
+    {
+        $this->getInlineEditIdCallback = $getInlineEditIdCallback;
+        return $this;
+    }
+
+    public function getTruncate(): ?int
+    {
+        return $this->truncate;
+    }
+
+    public function setTruncate(?int $truncate): self
+    {
+        $this->truncate = $truncate;
         return $this;
     }
 }

@@ -1,7 +1,7 @@
 {templateType App\Component\Datagrid\DataGridTemplate}
 {snippet dataGrid}
 
-    <div class="card card-grid min-w-full">
+    <div class="card card-grid min-w-full" n:snippet="content">
         <div class="card-header flex-wrap gap-2">
             <h3 class="card-title font-medium text-sm">
                 {_'paginator_show %perPage% from %count%', 'perPage' => $paginator->getLastItemOnPage(), 'count' => $paginator->getItemCount()}
@@ -34,21 +34,32 @@
                         </th>
                     {/foreach}
                     </thead>
-                    <tbody n:snippet="body">
+                    <tbody>
+
                     {foreach $selection as $activeRow}
                         <tr>
 
-                                {foreach $columns as $column}
-                                    <td class="text-gray-800 font-normal">
-                                        <a n:href="columnClick, $column->getId(), $activeRow['id']" n:tag-if="$column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null" class="ajax" data-naja-history="off">
+                            {foreach $columns as $column}
+                                {var string $rowText = $column->getRow($activeRow)}
+                                <td n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit'" data-inline-edit-url="{link 'inlineEdit', $column->getId(), $column->getInlineEditId($activeRow), 'xxxx'}" data-value="{$rowText}">
+                                    <a n:href="columnClick, $column->getId(), $activeRow['id']" n:tag-if="$column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null" class="ajax" data-naja-history="off">
+                                        <span class="text">
                                             {if $column->isNoEscape()}
-                                                {$column->getRow($activeRow)|noescape}
+                                                {$rowText|noescape}
                                             {else}
-                                                {$column->getRow($activeRow)}
+                                                {if $column->getColumnEntity()->getTruncate() !== null}
+                                                    {$rowText|truncate:$column->getColumnEntity()->getTruncate()}
+                                                {else}
+                                                    {$rowText}
+                                                {/if}
                                             {/if}
-                                        </a>
-                                    </td>
-                                {/foreach}
+                                        </span>
+                                        <button data-modal-toggle="#datagrid-inline-edit" class="inlineEditOpenModal" n:if="$column->getColumnEntity()->getInlineEditCallback() !== null && strlen($rowText) > 50">
+                                            <i class="ki-filled ki-exit-right-corner"></i>
+                                        </button>
+                                    </a>
+                                </td>
+                            {/foreach}
 
                             <td n:if="count($menus) > 0">
                                 <div class="menu" data-menu="true">
@@ -100,3 +111,25 @@
         </div>
     </div>
 {/snippet}
+
+<div class="modal" data-modal="true" id="datagrid-inline-edit">
+    <div class="modal-content max-w-[600px] top-[10%]">
+        <div class="modal-header">
+            <h3 class="modal-title">
+                {block title}{/block}
+            </h3>
+            <button class="btn btn-xs btn-icon btn-light" data-modal-dismiss="true">
+                <i class="ki-outline ki-cross">
+                </i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <label>
+                <textarea class="textarea"></textarea>
+            </label>
+            <div class="flex justify-end mt-6">
+                <button class="btn btn-primary dataGrid-inline-submit" data-modal-dismiss="true">{_'submit_update'}</button>
+            </div>
+        </div>
+    </div>
+</div>
