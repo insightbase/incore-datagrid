@@ -4,7 +4,10 @@ namespace App\Component\Datagrid;
 
 use App\Component\Datagrid\Column\Column;
 use App\Component\Datagrid\Menu\Menu;
+use App\Model\Entity\ModuleEntity;
+use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\Paginator;
 
@@ -25,4 +28,9 @@ class DataGridTemplate extends Template
     public array $menus;
     public string $globalSearchText;
     public bool $isEnabledExport;
+    /**
+     * @var ModuleEntity
+     */
+    public ActiveRow $module;
+    public Presenter $presenter;
 }

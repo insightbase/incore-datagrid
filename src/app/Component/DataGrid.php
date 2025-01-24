@@ -8,6 +8,7 @@ use App\Component\Datagrid\Dto\ReturnInlineEditCallback;
 use App\Component\Datagrid\Entity\BooleanColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Menu\MenuFactory;
+use App\Model\Module;
 use App\UI\Accessory\ParameterBag;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Persistent;
@@ -17,7 +18,6 @@ use Nette\Database\Table\Selection;
 use Nette\Localization\Translator;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Paginator;
-use PhpParser\Node\Param;
 
 /**
  * @property-read DataGridTemplate $template
@@ -48,6 +48,7 @@ class DataGrid extends Control
         private readonly ColumnFactory  $columnFactory,
         private readonly MenuFactory    $menuFactory,
         private readonly ParameterBag   $parameterBag,
+        private readonly Module         $moduleModel,
     )
     {
     }
@@ -180,7 +181,7 @@ class DataGrid extends Control
             }
 
             foreach ($this->dataGridEntity->getMenus() as $menu) {
-                $this->menus[] = $this->menuFactory->create($menu->label, $menu->plink)
+                $this->menus[] = $this->menuFactory->create($menu->label, $menu->plink, $menu)
                     ->setIcon($menu->getIcon());
             }
 
@@ -236,6 +237,8 @@ class DataGrid extends Control
         $this->template->menus = $this->menus;
         $this->template->globalSearchText = $this->globalSearch;
         $this->template->isEnabledExport = $this->dataGridEntity->isEnableExport();
+        $this->template->module = $this->moduleModel->getByPresenter($this->getPresenter()->getName());
+        $this->template->presenter = $this->getPresenter();
 
         $this->template->setTranslator($this->translator);
         $this->template->setFile(__DIR__ . '/dataGrid.latte');

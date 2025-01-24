@@ -2,6 +2,7 @@
 
 namespace App\Component\Datagrid\Menu;
 
+use App\Component\Datagrid\Entity\MenuEntity;
 use Nette\Application\UI\Control;
 
 class Menu extends Control
@@ -9,8 +10,9 @@ class Menu extends Control
     private ?string $icon = null;
 
     public function __construct(
-        public string $label,
-        public string $plink,
+        public string               $label,
+        public string               $plink,
+        private readonly MenuEntity $entity,
     )
     {
     }
@@ -24,5 +26,10 @@ class Menu extends Control
     {
         $this->icon = $icon;
         return $this;
+    }
+
+    public function getEntity(): MenuEntity
+    {
+        return $this->entity;
     }
 }
