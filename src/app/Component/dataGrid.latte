@@ -70,7 +70,9 @@
                                         </button>
                                         <div class="menu-dropdown menu-default w-full max-w-[175px]" data-menu-dismiss="true">
                                             <div class="menu-item" n:foreach="$menus as $menu" n:if="$presenter->getUser()->isAllowed($module->system_name, $menu->plink) && ($menu->getEntity()->getShowCallback())($activeRow)">
-                                                <a class="menu-link" href="{plink $menu->plink, $activeRow['id']}">
+                                                {var array $params['id'] = $activeRow['id']}
+                                                {php $params += $menu->getEntity()->getParams()}
+                                                <a class="menu-link" href="{plink $menu->plink ...$params}">
                                                     <span class="menu-icon" n:if="$menu->getIcon() !== null">
                                                         <i class="{$menu->getIcon()}"></i>
                                                     </span>

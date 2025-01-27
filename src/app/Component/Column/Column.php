@@ -5,18 +5,9 @@ namespace App\Component\Datagrid\Column;
 use App\Component\Datagrid\Entity\ColumnEntity;
 use Nette\Application\UI\Control;
 use Nette\Database\Table\ActiveRow;
-use Nette\Utils\DateTime;
 
 class Column extends Control
 {
-    /**
-     * @var callable
-     */
-    protected $getRowCallback;
-    /**
-     * @var callable
-     */
-    protected $getRowExportCallback;
     private bool $enabledSort = true;
     private bool $noEscape = false;
 
@@ -27,12 +18,6 @@ class Column extends Control
         private readonly string       $id,
     )
     {
-        $this->getRowCallback = function(ActiveRow $activeRow):string{
-            return (string)$activeRow[$this->column];
-        };
-        $this->getRowExportCallback = function(ActiveRow $activeRow):string{
-            return (string)$activeRow[$this->column];
-        };
     }
 
     public function getInlineEditId(ActiveRow $row):string{
@@ -40,14 +25,12 @@ class Column extends Control
     }
 
     public function getRowExport(ActiveRow $activeRow):string{
-        $callback = $this->getRowExportCallback;
-        return $callback($activeRow);
+        return ($this->columnEntity->getGetColumnExportCallback())($activeRow);
     }
 
     public function getRow(ActiveRow $activeRow): string
     {
-        $callback = $this->getRowCallback;
-        return $callback($activeRow);
+        return ($this->columnEntity->getColumnCallback())(($this->columnEntity->getGetRowCallback())($activeRow));
     }
 
     public function getColumn(): string
@@ -58,12 +41,6 @@ class Column extends Control
     public function getLabel(): string
     {
         return $this->label;
-    }
-
-    public function setGetRowCallback(callable $getRowCallback): self
-    {
-        $this->getRowCallback = $getRowCallback;
-        return $this;
     }
 
     public function isEnabledSort(): bool
@@ -86,16 +63,6 @@ class Column extends Control
     {
         $this->noEscape = $noEscape;
         return $this;
-    }
-
-    public function getGetRowExportCallback(): callable|\Closure
-    {
-        return $this->getRowExportCallback;
-    }
-
-    public function setGetRowExportCallback(callable|\Closure $getRowExportCallback): void
-    {
-        $this->getRowExportCallback = $getRowExportCallback;
     }
 
     public function getColumnEntity(): ColumnEntity

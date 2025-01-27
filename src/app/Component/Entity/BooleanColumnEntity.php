@@ -16,7 +16,7 @@ class BooleanColumnEntity extends ColumnEntity
     public function __construct(string $column, string $label, bool $sort = false, SortDirEnum $sortDir = SortDirEnum::ASC)
     {
         parent::__construct($column, $label, $sort, $sortDir);
-        $this->setGetRowCallback(function(ActiveRow $activeRow):string{
+        $this->setGetColumnCallback(function(ActiveRow $activeRow):string{
             if($activeRow[$this->column]){
                 $class = 'ki-filled ki-check-squared text-success';
             }else{
@@ -24,7 +24,7 @@ class BooleanColumnEntity extends ColumnEntity
             }
             return Html::el('i')->class($class);
         });
-        $this->setGetRowExportCallback(function(ActiveRow $activeRow):string{
+        $this->setGetColumnExportCallback(function(ActiveRow $activeRow):string{
             return (int)$activeRow[$this->column];
         });
     }

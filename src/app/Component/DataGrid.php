@@ -169,12 +169,6 @@ class DataGrid extends Control
                 if ($column->isEnableSearchGlobal()) {
                     $this->enableGlobalSearch = true;
                 }
-                if ($column->getRowCallback() !== null) {
-                    $columnGrid->setGetRowCallback($column->getRowCallback());
-                }
-                if ($column->getGetRowExportCallback() !== null) {
-                    $columnGrid->setGetRowExportCallback($column->getGetRowExportCallback());
-                }
                 if ($column instanceof BooleanColumnEntity) {
                     $columnGrid->setNoEscape(true);
                 }

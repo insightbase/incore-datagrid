@@ -7,25 +7,30 @@ use Nette\Database\Table\ActiveRow;
 
 class ColumnEntity
 {
-    private bool $enableSearchGlobal = false;
+    protected bool $enableSearchGlobal = false;
     /**
      * @var null|callable
      */
-    private $getRowCallback = null;
+    protected $getColumnCallback = null;
     /**
      * @var null|callable
      */
-    private $getRowExportCallback = null;
-    private bool $enabledSort = true;
+    protected $getColumnExportCallback = null;
+    protected bool $enabledSort = true;
     /**
      * @var ?callable
      */
-    private $inlineEditCallback = null;
+    protected $inlineEditCallback = null;
     /**
      * @var callable
      */
-    private $getInlineEditIdCallback;
-    private ?int $truncate = null;
+    protected $getInlineEditIdCallback;
+    protected ?int $truncate = null;
+    protected array $ref = [];
+    /**
+     * @var callable
+     */
+    protected $getRowCallback;
 
     public function __construct(
         public string $column,
@@ -36,6 +41,18 @@ class ColumnEntity
     {
         $this->getInlineEditIdCallback = function(ActiveRow $row):int{
             return $row['id'];
+        };
+        $this->getRowCallback = function(ActiveRow $activeRow):ActiveRow{
+            foreach($this->ref as $ref){
+                $activeRow = $activeRow->ref($ref);
+            }
+            return $activeRow;
+        };
+        $this->getColumnCallback = function(ActiveRow $activeRow):string{
+            return (string)$activeRow[$this->column];
+        };
+        $this->getColumnExportCallback = function(ActiveRow $activeRow):string{
+            return (string)$activeRow[$this->column];
         };
     }
 
@@ -51,13 +68,13 @@ class ColumnEntity
         return $this;
     }
 
-    public function getRowCallback():?callable
+    public function getColumnCallback():?callable
     {
-        return $this->getRowCallback;
+        return $this->getColumnCallback;
     }
 
-    public function setGetRowCallback(callable $getRowCallback):self{
-        $this->getRowCallback = $getRowCallback;
+    public function setGetColumnCallback(callable $getColumnCallback):self{
+        $this->getColumnCallback = $getColumnCallback;
         return $this;
     }
 
@@ -77,14 +94,14 @@ class ColumnEntity
         return $this->enabledSort;
     }
 
-    public function getGetRowExportCallback(): ?callable
+    public function getGetColumnExportCallback(): ?callable
     {
-        return $this->getRowExportCallback;
+        return $this->getColumnExportCallback;
     }
 
-    public function setGetRowExportCallback(?callable $getRowExportCallback): self
+    public function setGetColumnExportCallback(?callable $getColumnExportCallback): self
     {
-        $this->getRowExportCallback = $getRowExportCallback;
+        $this->getColumnExportCallback = $getColumnExportCallback;
         return $this;
     }
 
@@ -118,6 +135,28 @@ class ColumnEntity
     public function setTruncate(?int $truncate): self
     {
         $this->truncate = $truncate;
+        return $this;
+    }
+
+    public function getRef(): array
+    {
+        return $this->ref;
+    }
+
+    public function setRef(array $ref): self
+    {
+        $this->ref = $ref;
+        return $this;
+    }
+
+    public function getGetRowCallback(): callable
+    {
+        return $this->getRowCallback;
+    }
+
+    public function setGetRowCallback(callable $getRowCallback): self
+    {
+        $this->getRowCallback = $getRowCallback;
         return $this;
     }
 }

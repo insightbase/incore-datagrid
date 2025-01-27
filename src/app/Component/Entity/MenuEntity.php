@@ -11,6 +11,7 @@ class MenuEntity
      * @var callable
      */
     private $showCallback;
+    private array $params = [];
 
     public function __construct(
         public string $label,
@@ -41,6 +42,17 @@ class MenuEntity
     public function setShowCallback(callable $showCallback): self
     {
         $this->showCallback = $showCallback;
+        return $this;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    public function addParam(string $key, string $value): self
+    {
+        $this->params[$key] = $value;
         return $this;
     }
 }

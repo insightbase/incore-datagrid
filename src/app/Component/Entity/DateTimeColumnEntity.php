@@ -12,7 +12,7 @@ class DateTimeColumnEntity extends ColumnEntity
     public function __construct(string $column, string $label, bool $sort = false, SortDirEnum $sortDir = SortDirEnum::ASC)
     {
         parent::__construct($column, $label, $sort, $sortDir);
-        $this->setGetRowCallback(function(ActiveRow $activeRow):string {
+        $this->setGetColumnCallback(function(ActiveRow $activeRow):string {
             return $activeRow[$this->column]->format($this->format);
         });
     }
