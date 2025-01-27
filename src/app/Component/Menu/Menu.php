@@ -10,12 +10,10 @@ class Menu extends Control
     private ?string $icon = null;
 
     public function __construct(
-        public string               $label,
-        public string               $plink,
+        public string $label,
+        public string $plink,
         private readonly MenuEntity $entity,
-    )
-    {
-    }
+    ) {}
 
     public function getIcon(): ?string
     {
@@ -25,6 +23,7 @@ class Menu extends Control
     public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
+
         return $this;
     }
 

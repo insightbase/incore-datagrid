@@ -15,24 +15,25 @@ class HasManyColumnEntity extends ColumnEntity
     public function __construct(string $column, string $label, bool $sort = false, SortDirEnum $sortDir = SortDirEnum::ASC)
     {
         parent::__construct($column, $label, $sort, $sortDir);
-        $this->getRelationCallback = function(ActiveRow $activeRow):Selection{
+        $this->getRelationCallback = function (ActiveRow $activeRow): Selection {
             return $activeRow->related($this->relation);
         };
-        $this->getColumnCallback = (function(ActiveRow $activeRow):string {
-            if($this->relation === null){
+        $this->getColumnCallback = (function (ActiveRow $activeRow): string {
+            if (null === $this->relation) {
                 throw new RefNotSetException('If you use HasManyColumnEntity you must set ref (->setRef())');
             }
             $ret = [];
-            foreach(($this->getRelationCallback)($activeRow) as $row){
-                foreach($this->ref as $ref){
+            foreach (($this->getRelationCallback)($activeRow) as $row) {
+                foreach ($this->ref as $ref) {
                     $row = $row->ref($ref);
                 }
 
                 $ret[] = $row[$this->column];
             }
-            return implode(",", $ret);
+
+            return implode(',', $ret);
         });
-        $this->getRowCallback = function(ActiveRow $activeRow):ActiveRow{
+        $this->getRowCallback = function (ActiveRow $activeRow): ActiveRow {
             return $activeRow;
         };
     }
@@ -40,6 +41,7 @@ class HasManyColumnEntity extends ColumnEntity
     public function setRelation(?string $relation): self
     {
         $this->relation = $relation;
+
         return $this;
     }
 
@@ -56,6 +58,7 @@ class HasManyColumnEntity extends ColumnEntity
     public function setGetRelationCallback(\Closure $getRelationCallback): self
     {
         $this->getRelationCallback = $getRelationCallback;
+
         return $this;
     }
 }

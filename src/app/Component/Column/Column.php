@@ -12,19 +12,19 @@ class Column extends Control
     private bool $noEscape = false;
 
     public function __construct(
-        private readonly string       $column,
-        private readonly string       $label,
+        private readonly string $column,
+        private readonly string $label,
         private readonly ColumnEntity $columnEntity,
-        private readonly string       $id,
-    )
-    {
-    }
+        private readonly string $id,
+    ) {}
 
-    public function getInlineEditId(ActiveRow $row):string{
+    public function getInlineEditId(ActiveRow $row): string
+    {
         return ($this->getColumnEntity()->getGetInlineEditIdCallback())($row);
     }
 
-    public function getRowExport(ActiveRow $activeRow):string{
+    public function getRowExport(ActiveRow $activeRow): string
+    {
         return ($this->columnEntity->getGetColumnExportCallback())($activeRow);
     }
 
@@ -51,6 +51,7 @@ class Column extends Control
     public function setEnabledSort(bool $enabledSort): self
     {
         $this->enabledSort = $enabledSort;
+
         return $this;
     }
 
@@ -62,6 +63,7 @@ class Column extends Control
     public function setNoEscape(bool $noEscape): self
     {
         $this->noEscape = $noEscape;
+
         return $this;
     }
 

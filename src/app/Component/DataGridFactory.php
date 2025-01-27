@@ -7,5 +7,5 @@ use Nette\Database\Table\Selection;
 
 interface DataGridFactory
 {
-    public function create(Selection $selection, DataGridEntity $dataGridEntity):DataGrid;
+    public function create(Selection $selection, DataGridEntity $dataGridEntity): DataGrid;
 }

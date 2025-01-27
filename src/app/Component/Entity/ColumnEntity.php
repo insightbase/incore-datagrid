@@ -8,25 +8,30 @@ use Nette\Database\Table\ActiveRow;
 class ColumnEntity
 {
     protected bool $enableSearchGlobal = false;
+
     /**
      * @var null|callable
      */
-    protected $getColumnCallback = null;
+    protected $getColumnCallback;
+
     /**
      * @var null|callable
      */
-    protected $getColumnExportCallback = null;
+    protected $getColumnExportCallback;
     protected bool $enabledSort = true;
+
     /**
      * @var ?callable
      */
-    protected $inlineEditCallback = null;
+    protected $inlineEditCallback;
+
     /**
      * @var callable
      */
     protected $getInlineEditIdCallback;
     protected ?int $truncate = null;
     protected array $ref = [];
+
     /**
      * @var callable
      */
@@ -37,44 +42,48 @@ class ColumnEntity
         public string $label,
         public bool $sort = false,
         public SortDirEnum $sortDir = SortDirEnum::ASC,
-    )
-    {
-        $this->getInlineEditIdCallback = function(ActiveRow $row):int{
+    ) {
+        $this->getInlineEditIdCallback = function (ActiveRow $row): int {
             return $row['id'];
         };
-        $this->getRowCallback = function(ActiveRow $activeRow):ActiveRow{
-            foreach($this->ref as $ref){
+        $this->getRowCallback = function (ActiveRow $activeRow): ActiveRow {
+            foreach ($this->ref as $ref) {
                 $activeRow = $activeRow->ref($ref);
             }
+
             return $activeRow;
         };
-        $this->getColumnCallback = function(ActiveRow $activeRow):string{
-            return (string)$activeRow[$this->column];
+        $this->getColumnCallback = function (ActiveRow $activeRow): string {
+            return (string) $activeRow[$this->column];
         };
-        $this->getColumnExportCallback = function(ActiveRow $activeRow):string{
-            return (string)$activeRow[$this->column];
+        $this->getColumnExportCallback = function (ActiveRow $activeRow): string {
+            return (string) $activeRow[$this->column];
         };
     }
 
-    public function disableSort():self
+    public function disableSort(): self
     {
         $this->enabledSort = false;
+
         return $this;
     }
 
-    public function enableSort():self
+    public function enableSort(): self
     {
         $this->enabledSort = true;
+
         return $this;
     }
 
-    public function getColumnCallback():?callable
+    public function getColumnCallback(): ?callable
     {
         return $this->getColumnCallback;
     }
 
-    public function setGetColumnCallback(callable $getColumnCallback):self{
+    public function setGetColumnCallback(callable $getColumnCallback): self
+    {
         $this->getColumnCallback = $getColumnCallback;
+
         return $this;
     }
 
@@ -86,6 +95,7 @@ class ColumnEntity
     public function setEnableSearchGlobal(bool $enableSearchGlobal = true): self
     {
         $this->enableSearchGlobal = $enableSearchGlobal;
+
         return $this;
     }
 
@@ -102,6 +112,7 @@ class ColumnEntity
     public function setGetColumnExportCallback(?callable $getColumnExportCallback): self
     {
         $this->getColumnExportCallback = $getColumnExportCallback;
+
         return $this;
     }
 
@@ -113,6 +124,7 @@ class ColumnEntity
     public function setInlineEditCallback(?callable $inlineEditCallback): self
     {
         $this->inlineEditCallback = $inlineEditCallback;
+
         return $this;
     }
 
@@ -124,6 +136,7 @@ class ColumnEntity
     public function setGetInlineEditIdCallback(callable $getInlineEditIdCallback): self
     {
         $this->getInlineEditIdCallback = $getInlineEditIdCallback;
+
         return $this;
     }
 
@@ -135,6 +148,7 @@ class ColumnEntity
     public function setTruncate(?int $truncate): self
     {
         $this->truncate = $truncate;
+
         return $this;
     }
 
@@ -146,6 +160,7 @@ class ColumnEntity
     public function setRef(array $ref): self
     {
         $this->ref = $ref;
+
         return $this;
     }
 
@@ -157,6 +172,7 @@ class ColumnEntity
     public function setGetRowCallback(callable $getRowCallback): self
     {
         $this->getRowCallback = $getRowCallback;
+
         return $this;
     }
 }

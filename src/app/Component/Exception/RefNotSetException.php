@@ -2,7 +2,4 @@
 
 namespace App\Component\Datagrid\Exception;
 
-class RefNotSetException extends \Exception
-{
-
-}
+class RefNotSetException extends \Exception {}

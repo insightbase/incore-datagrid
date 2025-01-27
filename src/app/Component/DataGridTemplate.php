@@ -14,6 +14,7 @@ use Nette\Utils\Paginator;
 class DataGridTemplate extends Template
 {
     public Selection $selection;
+
     /**
      * @var array<Column>
      */
@@ -22,12 +23,14 @@ class DataGridTemplate extends Template
     public string $sortDir;
     public Paginator $paginator;
     public bool $isEnabledGlobalSearch;
+
     /**
      * @var array<Menu>
      */
     public array $menus;
     public string $globalSearchText;
     public bool $isEnabledExport;
+
     /**
      * @var ModuleEntity
      */

@@ -7,6 +7,7 @@ use Nette\Database\Table\ActiveRow;
 class MenuEntity
 {
     private ?string $icon = null;
+
     /**
      * @var callable
      */
@@ -16,9 +17,8 @@ class MenuEntity
     public function __construct(
         public string $label,
         public string $plink,
-    )
-    {
-        $this->showCallback = function(ActiveRow $row):bool{
+    ) {
+        $this->showCallback = function (ActiveRow $row): bool {
             return true;
         };
     }
@@ -31,6 +31,7 @@ class MenuEntity
     public function setIcon(?string $icon): self
     {
         $this->icon = $icon;
+
         return $this;
     }
 
@@ -42,6 +43,7 @@ class MenuEntity
     public function setShowCallback(callable $showCallback): self
     {
         $this->showCallback = $showCallback;
+
         return $this;
     }
 
@@ -53,6 +55,7 @@ class MenuEntity
     public function addParam(string $key, string $value): self
     {
         $this->params[$key] = $value;
+
         return $this;
     }
 }
