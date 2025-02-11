@@ -24,11 +24,11 @@
                     <thead>
                     {foreach $columns as $column}
                         <th class="min-w-[200px]">
-                            <a n:tag-if="$column->isEnabledSort()" n:class="'sort ajax', $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? 'asc', $sortDir === App\Component\Datagrid\SortDirEnum::DESC->value ? 'desc'" n:href="setSort, $column->getColumn(), $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? App\Component\Datagrid\SortDirEnum::DESC->value : App\Component\Datagrid\SortDirEnum::ASC->value">
+                            <a n:tag-if="$column->isEnabledSort()" n:class="'sort ajax', $column->getColumn() === $sort && $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? 'asc', $column->getColumn() === $sort && $sortDir === App\Component\Datagrid\SortDirEnum::DESC->value ? 'desc'" n:href="setSort, $column->getColumn(), $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? App\Component\Datagrid\SortDirEnum::DESC->value : App\Component\Datagrid\SortDirEnum::ASC->value">
                                 <span class="sort-label text-gray-700 font-normal">
                                     {$column->getLabel()}
                                 </span>
-                                <span class="sort-icon" n:if="$column->isEnabledSort() && $column->getColumn() === $sort">
+                                <span class="sort-icon" n:if="$column->isEnabledSort()">
                                 </span>
                             </a>
                         </th>
@@ -101,7 +101,7 @@
                                 <i class="ki-outline ki-black-left rtl:transform rtl:rotate-180"></i>
                             </a>
                             {for $interalPage = 1; $interalPage <= $paginator->getPageCount(); $interalPage++}
-                                <a n:href="setPage, $interalPage" n:class="'btn', $interalPage === $paginator->getPage() ? 'active disabled'" {if $interalPage === $paginator->getPage()}disabled=""{/if}>{$interalPage}</a>
+                                <a n:href="setPage, $interalPage" n:class="'btn ajax', $interalPage === $paginator->getPage() ? 'active disabled'" {if $interalPage === $paginator->getPage()}disabled=""{/if}>{$interalPage}</a>
                             {/for}
                             <a n:href="setPage, $paginator->getPage() + 1" n:class="'btn ajax', $paginator->isLast() ? 'disabled'" {if $paginator->isLast()}disabled=""{/if}>
                                 <i class="ki-outline ki-black-right rtl:transform rtl:rotate-180"></i>
