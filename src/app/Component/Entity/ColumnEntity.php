@@ -31,6 +31,7 @@ class ColumnEntity
     protected $getInlineEditIdCallback;
     protected ?int $truncate = null;
     protected array $ref = [];
+    protected bool $noEscape = false;
 
     /**
      * @var callable
@@ -173,6 +174,17 @@ class ColumnEntity
     {
         $this->getRowCallback = $getRowCallback;
 
+        return $this;
+    }
+
+    public function isNoEscape(): bool
+    {
+        return $this->noEscape;
+    }
+
+    public function setNoEscape(bool $noEscape = true): self
+    {
+        $this->noEscape = $noEscape;
         return $this;
     }
 }

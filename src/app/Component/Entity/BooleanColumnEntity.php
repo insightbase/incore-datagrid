@@ -28,6 +28,7 @@ class BooleanColumnEntity extends ColumnEntity
         $this->setGetColumnExportCallback(function (ActiveRow $activeRow): string {
             return (int) $activeRow[$this->column];
         });
+        $this->noEscape = true;
     }
 
     public function getOnClickCallback(): ?callable

@@ -152,9 +152,6 @@ class DataGrid extends Control
                 if ($column->isEnableSearchGlobal()) {
                     $this->enableGlobalSearch = true;
                 }
-                if ($column instanceof BooleanColumnEntity) {
-                    $columnGrid->setNoEscape(true);
-                }
             }
 
             foreach ($this->dataGridEntity->getMenus() as $menu) {

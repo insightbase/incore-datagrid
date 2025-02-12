@@ -44,7 +44,7 @@
                                 <td n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit'" data-inline-edit-url="{link 'inlineEdit', $column->getId(), $column->getInlineEditId($activeRow), 'xxxx'}" data-value="{$rowText}">
                                     <a n:href="columnClick, $column->getId(), $activeRow['id']" n:tag-if="$column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null" class="ajax" data-naja-history="off">
                                         <span class="text">
-                                            {if $column->isNoEscape()}
+                                            {if $column->getColumnEntity()->isNoEscape()}
                                                 {$rowText|noescape}
                                             {else}
                                                 {if $column->getColumnEntity()->getTruncate() !== null}

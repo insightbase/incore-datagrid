@@ -9,7 +9,6 @@ use Nette\Database\Table\ActiveRow;
 class Column extends Control
 {
     private bool $enabledSort = true;
-    private bool $noEscape = false;
 
     public function __construct(
         private readonly string $column,
@@ -51,18 +50,6 @@ class Column extends Control
     public function setEnabledSort(bool $enabledSort): self
     {
         $this->enabledSort = $enabledSort;
-
-        return $this;
-    }
-
-    public function isNoEscape(): bool
-    {
-        return $this->noEscape;
-    }
-
-    public function setNoEscape(bool $noEscape): self
-    {
-        $this->noEscape = $noEscape;
 
         return $this;
     }
