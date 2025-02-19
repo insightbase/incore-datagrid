@@ -15,8 +15,13 @@
     "require": {
         "php": ">= 8.4",
         "nette/database": "^3.2",
-        "nette/application": "^3.2"
+        "nette/application": "^3.2",
+        "incore/core": "@dev"
     },
     "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/insightbase/incore-core"
+        }
     ]
 }

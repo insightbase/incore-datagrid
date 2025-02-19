@@ -8,6 +8,9 @@ use App\Component\Datagrid\Dto\ReturnInlineEditCallback;
 use App\Component\Datagrid\Entity\BooleanColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Menu\MenuFactory;
+use App\Component\Image\ImageControl;
+use App\Component\Image\ImageControlFactory;
+use App\Core\Enum\DefaultSnippetsEnum;
 use App\Model\Module;
 use App\UI\Accessory\ParameterBag;
 use JetBrains\PhpStorm\NoReturn;
@@ -42,14 +45,19 @@ class DataGrid extends Control
     private bool $isInit = false;
 
     public function __construct(
-        private readonly Selection $selection,
-        private readonly Translator $translator,
-        private readonly DataGridEntity $dataGridEntity,
-        private readonly ColumnFactory $columnFactory,
-        private readonly MenuFactory $menuFactory,
-        private readonly ParameterBag $parameterBag,
-        private readonly Module $moduleModel,
+        private readonly Selection           $selection,
+        private readonly Translator          $translator,
+        private readonly DataGridEntity      $dataGridEntity,
+        private readonly ColumnFactory       $columnFactory,
+        private readonly MenuFactory         $menuFactory,
+        private readonly ParameterBag        $parameterBag,
+        private readonly Module              $moduleModel,
+        private readonly ImageControlFactory $imageControlFactory,
     ) {}
+
+    protected function createComponentImage():ImageControl{
+        return $this->imageControlFactory->create();
+    }
 
     #[NoReturn]
     public function handleExport(): void
@@ -117,7 +125,7 @@ class DataGrid extends Control
         } else {
             $this->getPresenter()->flashMessage($this->translator->translate('flash_badLink'), 'error');
         }
-        $this->getPresenter()->redrawControl('flashes');
+        $this->getPresenter()->redrawControl(DefaultSnippetsEnum::Flashes->value);
     }
 
     public function handleColumnClick(string $columnId, int $id): void

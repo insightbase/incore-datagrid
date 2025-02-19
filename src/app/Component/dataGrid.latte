@@ -44,13 +44,17 @@
                                 <td n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit'" data-inline-edit-url="{link 'inlineEdit', $column->getId(), $column->getInlineEditId($activeRow), 'xxxx'}" data-value="{$rowText}">
                                     <a n:href="columnClick, $column->getId(), $activeRow['id']" n:tag-if="$column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null" class="ajax" data-naja-history="off">
                                         <span class="text">
-                                            {if $column->getColumnEntity()->isNoEscape()}
-                                                {$rowText|noescape}
+                                            {if $column->getColumnEntity() instanceof App\Component\Datagrid\Entity\ImageColumnEntity}
+                                                {control image, (int)$rowText, 100, 100}
                                             {else}
-                                                {if $column->getColumnEntity()->getTruncate() !== null}
-                                                    {$rowText|truncate:$column->getColumnEntity()->getTruncate()}
+                                                {if $column->getColumnEntity()->isNoEscape()}
+                                                    {$rowText|noescape}
                                                 {else}
-                                                    {$rowText}
+                                                    {if $column->getColumnEntity()->getTruncate() !== null}
+                                                        {$rowText|truncate:$column->getColumnEntity()->getTruncate()}
+                                                    {else}
+                                                        {$rowText}
+                                                    {/if}
                                                 {/if}
                                             {/if}
                                         </span>
