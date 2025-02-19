@@ -1,5 +1,5 @@
 {
-    "version": "0.0.2",
+    "version": "0.0.1",
     "name": "incore/datagrid",
     "description": "Datagrid for inCore system",
     "autoload": {
@@ -11,7 +11,8 @@
             "email": "info@insightbase.cz"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">= 8.4",
         "nette/database": "^3.2",
