@@ -54,7 +54,7 @@ class ColumnEntity
 
             return $activeRow;
         };
-        $this->getColumnCallback = function (ActiveRow $activeRow): string {
+        $this->getColumnCallback = function (ActiveRow $activeRow, bool $original = false): string {
             return (string) $activeRow[$this->column];
         };
         $this->getColumnExportCallback = function (ActiveRow $activeRow): string {

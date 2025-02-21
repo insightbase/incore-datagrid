@@ -8,6 +8,7 @@ use App\Component\Datagrid\Dto\ReturnInlineEditCallback;
 use App\Component\Datagrid\Entity\BooleanColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Menu\MenuFactory;
+use App\Component\EditorJs\EditorJsFacade;
 use App\Component\Image\ImageControl;
 use App\Component\Image\ImageControlFactory;
 use App\Core\Admin\Enum\DefaultSnippetsEnum;

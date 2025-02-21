@@ -3,18 +3,23 @@
 namespace App\Component\Datagrid\Column;
 
 use App\Component\Datagrid\Entity\ColumnEntity;
+use App\Component\EditorJs\EditorJsFacade;
 use Nette\Application\UI\Control;
 use Nette\Database\Table\ActiveRow;
+use Nette\Utils\Json;
+use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 
 class Column extends Control
 {
     private bool $enabledSort = true;
 
     public function __construct(
-        private readonly string $column,
-        private readonly string $label,
-        private readonly ColumnEntity $columnEntity,
-        private readonly string $id,
+        private readonly string         $column,
+        private readonly string         $label,
+        private readonly ColumnEntity   $columnEntity,
+        private readonly string         $id,
+        private readonly EditorJsFacade $editorJsFacade,
     ) {}
 
     public function getInlineEditId(ActiveRow $row): string
@@ -27,9 +32,40 @@ class Column extends Control
         return ($this->columnEntity->getGetColumnExportCallback())($activeRow);
     }
 
-    public function getRow(ActiveRow $activeRow): string
+    public function getRow(ActiveRow $activeRow, bool $original = false): string
     {
-        return ($this->columnEntity->getColumnCallback())(($this->columnEntity->getGetRowCallback())($activeRow));
+        $value = ($this->columnEntity->getColumnCallback())(($this->columnEntity->getGetRowCallback())($activeRow));
+        if($original) {
+            return $value;
+        }else{
+            try {
+                $json = Json::decode($value, true);
+                if(is_array($json) && array_key_exists('time', $json)) {
+                    return strip_tags($this->editorJsFacade->renderJson($value));
+                }else{
+                    return $value;
+                }
+            } catch (JsonException $e) {
+                return $value;
+            }
+        }
+    }
+
+    public function showOpenModalInInlineEdit(ActiveRow $row):bool{
+        if($this->getColumnEntity()->getInlineEditCallback() === null){
+            return false;
+        }
+        $value = $this->getRow($row, true);
+        try {
+            Json::decode($value);
+            return true;
+        } catch (JsonException $e) {
+            if($value === '' || $value === null || Strings::length($value) ){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 
     public function getColumn(): string
