@@ -38,7 +38,7 @@ class Column extends Control
         if($toEditor){
             try{
                 $json = Json::decode($value, true);
-                if(array_key_exists('time', $json)){
+                if(is_array($json) && array_key_exists('time', $json)){
                     return $value;
                 }
             }catch(JsonException $e){
