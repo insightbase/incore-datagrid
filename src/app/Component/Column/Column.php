@@ -32,9 +32,20 @@ class Column extends Control
         return ($this->columnEntity->getGetColumnExportCallback())($activeRow);
     }
 
-    public function getRow(ActiveRow $activeRow, bool $original = false): string
+    public function getRow(ActiveRow $activeRow, bool $original = false, bool $toEditor = false): string
     {
         $value = ($this->columnEntity->getColumnCallback())(($this->columnEntity->getGetRowCallback())($activeRow));
+        if($toEditor){
+            try{
+                $json = Json::decode($value, true);
+                if(array_key_exists('time', $json)){
+                    return $value;
+                }
+            }catch(JsonException $e){
+
+            }
+            return '{"time":' . time() . ',"blocks":[{"id":"","type":"paragraph","data":{"text":"' . $value . '"}}],"version":""}';
+        }
         if($original) {
             return $value;
         }else{
@@ -55,12 +66,17 @@ class Column extends Control
         if($this->getColumnEntity()->getInlineEditCallback() === null){
             return false;
         }
+        return true;
         $value = $this->getRow($row, true);
         try {
-            Json::decode($value);
-            return true;
+            $json = Json::decode($value, true);
+            if(array_key_exists('time', $json)) {
+                return true;
+            }else{
+                return false;
+            }
         } catch (JsonException $e) {
-            if($value === '' || $value === null || Strings::length($value) ){
+            if($value === '' || $value === null || Strings::length($value) > 255 ){
                 return true;
             }else{
                 return false;

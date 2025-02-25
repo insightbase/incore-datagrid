@@ -42,7 +42,8 @@
                             {foreach $columns as $column}
                                 {var string $rowText = $column->getRow($activeRow)}
                                 {var string $rowTextOriginal = $column->getRow($activeRow, true)}
-                                <td n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit'" data-inline-edit-url="{link 'inlineEdit', $column->getId(), $column->getInlineEditId($activeRow), 'xxxx'}" data-value="{$rowTextOriginal}">
+                                {var string $rowTextEditor = $column->getRow($activeRow, toEditor: true)}
+                                <td n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit'" data-inline-edit-url="{link 'inlineEdit', $column->getId(), $column->getInlineEditId($activeRow), 'xxxx'}" data-value="{$rowTextOriginal}" data-editor-value="{$rowTextEditor}">
                                     <a n:href="columnClick, $column->getId(), $activeRow['id']" n:tag-if="$column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null" class="ajax" data-naja-history="off">
                                         <span class="text">
                                             {if $column->getColumnEntity() instanceof App\Component\Datagrid\Entity\ImageColumnEntity}
