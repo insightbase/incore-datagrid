@@ -49,7 +49,7 @@ class Column extends Control
         if($original) {
             return $value;
         }else{
-            return strip_tags($value);
+            return $value;
         }
     }
 
