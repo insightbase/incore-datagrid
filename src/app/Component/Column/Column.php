@@ -35,7 +35,6 @@ class Column extends Control
     public function getRow(ActiveRow $activeRow, bool $original = false, bool $toEditor = false): string
     {
         $value = ($this->columnEntity->getColumnCallback())(($this->columnEntity->getGetRowCallback())($activeRow));
-        return $value;
         if($toEditor){
             try{
                 $json = Json::decode($value, true);
@@ -50,16 +49,7 @@ class Column extends Control
         if($original) {
             return $value;
         }else{
-            try {
-                $json = Json::decode($value, true);
-                if(is_array($json) && array_key_exists('time', $json)) {
-                    return strip_tags($this->editorJsFacade->renderJson($value));
-                }else{
-                    return $value;
-                }
-            } catch (JsonException $e) {
-                return $value;
-            }
+            return strip_tags($value);
         }
     }
 
