@@ -66,7 +66,6 @@ class Column extends Control
         if($this->getColumnEntity()->getInlineEditCallback() === null){
             return false;
         }
-        return true;
         $value = $this->getRow($row, true);
         try {
             $json = Json::decode($value, true);
