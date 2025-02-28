@@ -35,6 +35,7 @@ class Column extends Control
     public function getRow(ActiveRow $activeRow, bool $original = false, bool $toEditor = false): string
     {
         $value = ($this->columnEntity->getColumnCallback())(($this->columnEntity->getGetRowCallback())($activeRow));
+        return $value;
         if($toEditor){
             try{
                 $json = Json::decode($value, true);
