@@ -3,6 +3,7 @@
 namespace App\Component\Datagrid\Entity;
 
 use Nette\Database\Table\Selection;
+use Nette\Utils\Random;
 
 class DataGridEntity
 {
@@ -22,12 +23,22 @@ class DataGridEntity
      */
     private $getCountCallback;
     private bool $enableExport = false;
+    /**
+     * @var FilterEntity[]
+     */
+    private array $filters = [];
 
     public function __construct()
     {
         $this->getCountCallback = function (Selection $model): int {
             return $model->count('*');
         };
+    }
+
+    public function addFilter(FilterEntity $filterEntity):self
+    {
+        $this->filters['filter_' . count($this->filters)] = $filterEntity;
+        return $this;
     }
 
     public function addMenu(MenuEntity $menuEntity): self
@@ -88,5 +99,10 @@ class DataGridEntity
         $this->enableExport = $enableExport;
 
         return $this;
+    }
+
+    public function getFilters(): array
+    {
+        return $this->filters;
     }
 }

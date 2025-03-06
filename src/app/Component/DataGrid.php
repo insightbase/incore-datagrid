@@ -7,6 +7,7 @@ use App\Component\Datagrid\Column\ColumnFactory;
 use App\Component\Datagrid\Dto\ReturnInlineEditCallback;
 use App\Component\Datagrid\Entity\BooleanColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
+use App\Component\Datagrid\Exception\FilterHasNotSetChangeCallbackException;
 use App\Component\Datagrid\Menu\MenuFactory;
 use App\Component\EditorJs\EditorJsFacade;
 use App\Component\Image\ImageControl;
@@ -44,6 +45,8 @@ class DataGrid extends Control
     private bool $enableGlobalSearch = false;
     private array $menus = [];
     private bool $isInit = false;
+    #[Persistent]
+    public array $filter = [];
 
     public function __construct(
         private readonly Selection           $selection,
@@ -55,6 +58,15 @@ class DataGrid extends Control
         private readonly Module              $moduleModel,
         private readonly ImageControlFactory $imageControlFactory,
     ) {}
+
+    public function handleChangeFilter(string $name, string $value):void
+    {
+        $this->init();
+        $this->filter[$name] = $value;
+        $callback = $this->dataGridEntity->getFilters()[$name]->getOnChangeCallback();
+        $callback($this->selection, $value);
+        $this->redrawControl();
+    }
 
     protected function createComponentImage():ImageControl{
         return $this->imageControlFactory->create();
@@ -169,6 +181,12 @@ class DataGrid extends Control
                 ;
             }
 
+            foreach($this->dataGridEntity->getFilters() as $filter){
+                if($filter->getOnChangeCallback() === null){
+                    throw new FilterHasNotSetChangeCallbackException($filter->getLabel());
+                }
+            }
+
             $this->initModel();
 
             $this->isInit = true;
@@ -203,6 +221,8 @@ class DataGrid extends Control
         $this->template->isEnabledExport = $this->dataGridEntity->isEnableExport();
         $this->template->module = $this->moduleModel->getByPresenter($this->getPresenter()->getName());
         $this->template->presenter = $this->getPresenter();
+        $this->template->dataGridEntity = $this->dataGridEntity;
+        $this->template->filter = $this->filter;
 
         $this->template->setTranslator($this->translator);
         $this->template->setFile(__DIR__.'/dataGrid.latte');

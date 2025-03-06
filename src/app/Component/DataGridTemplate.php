@@ -3,6 +3,7 @@
 namespace App\Component\Datagrid;
 
 use App\Component\Datagrid\Column\Column;
+use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Menu\Menu;
 use App\Model\Entity\ModuleEntity;
 use Nette\Application\UI\Presenter;
@@ -36,4 +37,6 @@ class DataGridTemplate extends Template
      */
     public ActiveRow $module;
     public Presenter $presenter;
+    public DataGridEntity $dataGridEntity;
+    public array $filter;
 }
