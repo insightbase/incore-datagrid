@@ -33,9 +33,9 @@ class DataGridTemplate extends Template
     public bool $isEnabledExport;
 
     /**
-     * @var ModuleEntity
+     * @var ?ModuleEntity
      */
-    public ActiveRow $module;
+    public ?ActiveRow $module;
     public Presenter $presenter;
     public DataGridEntity $dataGridEntity;
     public array $filter;

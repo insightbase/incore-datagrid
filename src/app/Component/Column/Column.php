@@ -4,23 +4,41 @@ namespace App\Component\Datagrid\Column;
 
 use App\Component\Datagrid\Entity\ColumnEntity;
 use App\Component\EditorJs\EditorJsFacade;
+use App\Component\Image\ImageControl;
+use App\Component\Image\ImageControlFactory;
 use Nette\Application\UI\Control;
 use Nette\Database\Table\ActiveRow;
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
 use Nette\Utils\Strings;
 
+/**
+ * @property-read Template $template
+ */
 class Column extends Control
 {
     private bool $enabledSort = true;
+    protected array $beforeRender = [];
 
     public function __construct(
-        private readonly string         $column,
-        private readonly string         $label,
-        private readonly ColumnEntity   $columnEntity,
-        private readonly string         $id,
-        private readonly EditorJsFacade $editorJsFacade,
+        private readonly string              $column,
+        private readonly string              $label,
+        private readonly ColumnEntity        $columnEntity,
+        private readonly string              $id,
+        private readonly EditorJsFacade      $editorJsFacade,
+        private readonly ImageControlFactory $imageControlFactory,
     ) {}
+
+    protected function createComponentImage():ImageControl{
+        return $this->imageControlFactory->create();
+    }
+
+    public function render(ActiveRow $activeRow):void
+    {
+        $this->template->column = $this;
+        $this->template->activeRow = ($this->columnEntity->getGetRowCallback())($activeRow);
+        $this->template->render(dirname(__FILE__) . '/' . $this->columnEntity->templateFile);
+    }
 
     public function getInlineEditId(ActiveRow $row): string
     {
@@ -105,5 +123,11 @@ class Column extends Control
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function setTemplateFile(string $templateFile): self
+    {
+        $this->templateFile = $templateFile;
+        return $this;
     }
 }

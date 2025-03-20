@@ -47,35 +47,7 @@
                         <tr>
 
                             {foreach $columns as $column}
-                                {var string $rowText = $column->getRow($activeRow)}
-                                {var string $rowTextOriginal = $column->getRow($activeRow, true)}
-                                {var string $rowTextEditor = $column->getRow($activeRow, toEditor: true)}
-                                <td n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit'" data-inline-edit-url="{link 'inlineEdit', $column->getId(), $column->getInlineEditId($activeRow), 'xxxx'}" data-value="{$rowTextOriginal}" data-editor-value="{$rowTextEditor}">
-                                    <a n:href="columnClick, $column->getId(), $activeRow['id']" n:tag-if="$column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null" class="ajax" data-naja-history="off">
-                                        <span class="text">
-                                            {if $column->getColumnEntity() instanceof App\Component\Datagrid\Entity\ImageColumnEntity}
-                                                {control image, (int)$rowText, 100, 100}
-                                            {else}
-                                                {if $column->getColumnEntity()->isNoEscape()}
-                                                    {if $column->getColumnEntity()->getTruncate() !== null}
-                                                        {$rowText|strip|truncate:$column->getColumnEntity()->getTruncate()}
-                                                    {else}
-                                                        {$rowText|noescape}
-                                                    {/if}
-                                                {else}
-                                                    {if $column->getColumnEntity()->getTruncate() !== null}
-                                                        {$rowText|truncate:$column->getColumnEntity()->getTruncate()|noescape}
-                                                    {else}
-                                                        {$rowText}
-                                                    {/if}
-                                                {/if}
-                                            {/if}
-                                        </span>
-                                        <button data-modal-toggle="#datagrid-inline-edit" class="inlineEditOpenModal" n:if="$column->showOpenModalInInlineEdit($activeRow)">
-                                            <i class="ki-filled ki-exit-right-corner"></i>
-                                        </button>
-                                    </a>
-                                </td>
+                                {$column->render($activeRow)}
                             {/foreach}
 
                             <td n:if="count($menus) > 0">

@@ -32,6 +32,15 @@ class ColumnEntity
     protected ?int $truncate = null;
     protected array $ref = [];
     protected bool $noEscape = false;
+    public string $templateFile = 'default.latte' {
+        get {
+            return $this->templateFile;
+        }
+        set {
+            $this->templateFile = $value;
+        }
+    }
+    public array $beforeRender = [];
 
     /**
      * @var callable

@@ -164,7 +164,7 @@ class DataGrid extends Control
         if (!$this->isInit) {
             foreach ($this->dataGridEntity->getColumns() as $column) {
                 $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label, $column, 'column_'.count($this->columns))
-                    ->setEnabledSort($column->isEnabledSort())
+                    ->setEnabledSort($column->isEnabledSort())->setParent($this)
                 ;
                 if ($column->sort && '' === $this->sort) {
                     $this->sort = $column->column;
