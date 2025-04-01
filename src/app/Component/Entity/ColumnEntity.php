@@ -48,7 +48,7 @@ class ColumnEntity
      */
     protected $getRowCallback;
     public string $modalId = 'datagrid-inline-edit';
-    public InlineEdit $inlineEdit;
+    public ?InlineEdit $inlineEdit = null;
 
     public function __construct(
         public string $column,
@@ -197,6 +197,12 @@ class ColumnEntity
     public function setNoEscape(bool $noEscape = true): self
     {
         $this->noEscape = $noEscape;
+        return $this;
+    }
+
+    public function setInlineEdit(?InlineEdit $inlineEdit): self
+    {
+        $this->inlineEdit = $inlineEdit;
         return $this;
     }
 }

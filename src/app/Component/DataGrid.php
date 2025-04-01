@@ -64,15 +64,26 @@ class DataGrid extends Control
         private readonly Language            $languageModel,
     ) {}
 
-    public function handleRefreshModal(string $columnId):void{
-        $this->getComponent('formInlineEdit')->setDefaults(['value' => $columnId]);
+    public function handleRefreshModal(string $columnId, int $id):void{
+        $this->init();
+        $column = $this->getColumnById($columnId);
+        $this->getComponent('formInlineEdit')->setDefaults($column->getColumnEntity()->inlineEdit->getDefaults($id) + ['id' => $id, 'columnId' => $columnId]);
         $this->redrawControl('inlineModalBody');
     }
 
     protected function createComponentFormInlineEdit():Form{
         $form = $this->formFactory->create();
+        $form->sendByAjax();
         $form->addTextArea('value');
+        $form->addHidden('id');
+        $form->addHidden('columnId');
         $form->addSubmit('send', $this->translator->translate('input_update'));
+        $form->onSuccess[] = function(Form $form, array $values):void{
+            $this->init();
+            $column = $this->getColumnById($values['columnId']);
+            $column->getColumnEntity()->inlineEdit->getOnSuccessCallback()($values);
+            $this->redrawControl('dataGrid');
+        };
         return $form;
     }
 

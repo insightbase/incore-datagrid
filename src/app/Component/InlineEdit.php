@@ -7,4 +7,6 @@ use Nette\Database\Table\ActiveRow;
 interface InlineEdit
 {
     public function isEnabled(ActiveRow $row):bool;
+    public function getDefaults(int $id):array;
+    public function getOnSuccessCallback():callable;
 }
