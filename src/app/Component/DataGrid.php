@@ -77,12 +77,14 @@ class DataGrid extends Control
         $form->addTextArea('value');
         $form->addHidden('id');
         $form->addHidden('columnId');
-        $form->addSubmit('send', $this->translator->translate('input_update'));
+        $form->addSubmit('send', $this->translator->translate('input_update'))
+            ->getControlPrototype()->addAttributes(['data-modal-dismiss' => true]);
         $form->onSuccess[] = function(Form $form, array $values):void{
             $this->init();
             $column = $this->getColumnById($values['columnId']);
             $column->getColumnEntity()->inlineEdit->getOnSuccessCallback()($values);
             $this->redrawControl('dataGrid');
+            $this->redrawControl('inlineModalBody');
         };
         return $form;
     }
@@ -302,6 +304,11 @@ class DataGrid extends Control
                     $this->selection->where(implode(' OR ', $query), $params);
                 }
             }
+        }
+
+        foreach($this->filter as $key => $value){
+            $callback = $this->dataGridEntity->getFilters()[$key]->getOnChangeCallback();
+            $callback($this->selection, $value);
         }
     }
 }
