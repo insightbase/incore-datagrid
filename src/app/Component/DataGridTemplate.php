@@ -5,6 +5,7 @@ namespace App\Component\Datagrid;
 use App\Component\Datagrid\Column\Column;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Menu\Menu;
+use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\ModuleEntity;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
@@ -39,4 +40,9 @@ class DataGridTemplate extends Template
     public Presenter $presenter;
     public DataGridEntity $dataGridEntity;
     public array $filter;
+    public string $basicFormFile;
+    /**
+     * @var LanguageEntity
+     */
+    public ActiveRow $defaultLanguage;
 }

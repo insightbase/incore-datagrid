@@ -1,4 +1,5 @@
 {templateType App\Component\Datagrid\DataGridTemplate}
+{import $basicFormFile}
 {snippet dataGrid}
 
     <div class="card card-grid min-w-full" n:snippet="content">
@@ -115,6 +116,9 @@
             </button>
         </div>
         <div class="modal-body">
+            {snippet inlineModalBody}
+                {embed basicForm, formInlineEdit}{/embed}
+            {/snippet}
             <label>
                 <textarea class="textarea"></textarea>
             </label>

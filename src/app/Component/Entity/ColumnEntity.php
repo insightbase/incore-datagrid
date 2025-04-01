@@ -2,6 +2,7 @@
 
 namespace App\Component\Datagrid\Entity;
 
+use App\Component\Datagrid\InlineEdit;
 use App\Component\Datagrid\SortDirEnum;
 use Nette\Database\Table\ActiveRow;
 
@@ -46,6 +47,8 @@ class ColumnEntity
      * @var callable
      */
     protected $getRowCallback;
+    public string $modalId = 'datagrid-inline-edit';
+    public InlineEdit $inlineEdit;
 
     public function __construct(
         public string $column,

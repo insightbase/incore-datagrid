@@ -13,7 +13,10 @@ use App\Component\EditorJs\EditorJsFacade;
 use App\Component\Image\ImageControl;
 use App\Component\Image\ImageControlFactory;
 use App\Core\Admin\Enum\DefaultSnippetsEnum;
+use App\Model\Admin\Language;
 use App\Model\Admin\Module;
+use App\UI\Accessory\Admin\Form\Form;
+use App\UI\Accessory\Admin\Form\FormFactory;
 use App\UI\Accessory\ParameterBag;
 use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Persistent;
@@ -57,7 +60,21 @@ class DataGrid extends Control
         private readonly ParameterBag        $parameterBag,
         private readonly Module              $moduleModel,
         private readonly ImageControlFactory $imageControlFactory,
+        private readonly FormFactory         $formFactory,
+        private readonly Language            $languageModel,
     ) {}
+
+    public function handleRefreshModal(string $columnId):void{
+        $this->getComponent('formInlineEdit')->setDefaults(['value' => $columnId]);
+        $this->redrawControl('inlineModalBody');
+    }
+
+    protected function createComponentFormInlineEdit():Form{
+        $form = $this->formFactory->create();
+        $form->addTextArea('value');
+        $form->addSubmit('send', $this->translator->translate('input_update'));
+        return $form;
+    }
 
     public function handleChangeFilter(string $name, string $value):void
     {
@@ -223,6 +240,13 @@ class DataGrid extends Control
         $this->template->presenter = $this->getPresenter();
         $this->template->dataGridEntity = $this->dataGridEntity;
         $this->template->filter = $this->filter;
+        $this->template->basicFormFile = $this->parameterBag->rootDir . '/vendor/incore/core/src/app/UI/Accessory/Admin/Form/basic-form.latte';
+        foreach ($this->languageModel->getToTranslate() as $language) {
+            if ($language->is_default) {
+                $this->template->defaultLanguage = $language;
+                break;
+            }
+        }
 
         $this->template->setTranslator($this->translator);
         $this->template->setFile(__DIR__.'/dataGrid.latte');
