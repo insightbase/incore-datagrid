@@ -22,6 +22,7 @@ use JetBrains\PhpStorm\NoReturn;
 use Nette\Application\Attributes\Persistent;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Control;
+use Nette\Application\UI\Multiplier;
 use Nette\Database\Table\Selection;
 use Nette\Localization\Translator;
 use Nette\Utils\FileSystem;
@@ -50,6 +51,7 @@ class DataGrid extends Control
     private bool $isInit = false;
     #[Persistent]
     public array $filter = [];
+    private string $columnId = 'default';
 
     public function __construct(
         private readonly Selection           $selection,
@@ -67,26 +69,38 @@ class DataGrid extends Control
     public function handleRefreshModal(string $columnId, int $id):void{
         $this->init();
         $column = $this->getColumnById($columnId);
-        $this->getComponent('formInlineEdit')->setDefaults($column->getColumnEntity()->inlineEdit->getDefaults($id) + ['id' => $id, 'columnId' => $columnId]);
+        $this->getComponent('formInlineEdit-' . $columnId)->setDefaults($column->getColumnEntity()->inlineEdit->getDefaults($id) + ['id' => $id, 'columnId' => $columnId]);
+        $this->columnId = $columnId;
         $this->redrawControl('inlineModalBody');
     }
 
-    protected function createComponentFormInlineEdit():Form{
-        $form = $this->formFactory->create();
-        $form->sendByAjax();
-        $form->addTextArea('value');
-        $form->addHidden('id');
-        $form->addHidden('columnId');
-        $form->addSubmit('send', $this->translator->translate('input_update'))
-            ->getControlPrototype()->addAttributes(['data-modal-dismiss' => true]);
-        $form->onSuccess[] = function(Form $form, array $values):void{
+    protected function createComponentFormInlineEdit():Multiplier{
+        return new Multiplier(function(string $columnId):Form{
             $this->init();
-            $column = $this->getColumnById($values['columnId']);
-            $column->getColumnEntity()->inlineEdit->getOnSuccessCallback()($values);
-            $this->redrawControl('dataGrid');
-            $this->redrawControl('inlineModalBody');
-        };
-        return $form;
+
+            $column = $this->getColumnById($columnId);
+            if($columnId !== 'default' && $column->getColumnEntity()->inlineEdit->getForm() !== null){
+                $form = $column->getColumnEntity()->inlineEdit->getForm();
+            }else {
+                $form = $this->formFactory->create();
+                $form->addTextArea('value');
+            }
+
+            $form->sendByAjax();
+            $form->addHidden('columnId');
+            $form->addSubmit('send', $this->translator->translate('input_update'))
+                ->getControlPrototype()->addAttributes(['data-modal-dismiss' => true]);
+            $form->addHidden('id');
+
+            $form->onSuccess[] = function(Form $form, array $values):void{
+                $this->init();
+                $column = $this->getColumnById($values['columnId']);
+                $column->getColumnEntity()->inlineEdit->getOnSuccessCallback()($values);
+                $this->redrawControl('dataGrid');
+                $this->redrawControl('inlineModalBody');
+            };
+            return $form;
+        });
     }
 
     public function handleChangeFilter(string $name, string $value):void
@@ -260,6 +274,8 @@ class DataGrid extends Control
                 break;
             }
         }
+        $this->template->control = $this;
+        $this->template->columnId = $this->columnId;
 
         $this->template->setTranslator($this->translator);
         $this->template->setFile(__DIR__.'/dataGrid.latte');

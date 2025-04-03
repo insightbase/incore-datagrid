@@ -117,7 +117,8 @@
         </div>
         <div class="modal-body">
             {snippet inlineModalBody}
-                {embed basicForm, formInlineEdit}{/embed}
+            {dump $columnId}
+                {embed basicForm, $control->getComponent('formInlineEdit-' . $columnId)}{/embed}
             {/snippet}
         </div>
     </div>
