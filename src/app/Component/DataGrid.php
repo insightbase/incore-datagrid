@@ -71,7 +71,9 @@ class DataGrid extends Control
         $column = $this->getColumnById($columnId);
         $this->getComponent('formInlineEdit-' . $columnId)->setDefaults($column->getColumnEntity()->inlineEdit->getDefaults($id) + ['id' => $id, 'columnId' => $columnId]);
         $this->columnId = $columnId;
+        $this->template->inlineModalHeader = $column->getColumnEntity()->inlineEdit->getHeader($id);
         $this->redrawControl('inlineModalBody');
+        $this->redrawControl('inlineModalHeader');
     }
 
     protected function createComponentFormInlineEdit():Multiplier{

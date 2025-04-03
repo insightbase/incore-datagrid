@@ -49,4 +49,5 @@ class DataGridTemplate extends Template
     public ActiveRow $defaultLanguage;
     public DataGrid $control;
     public string $columnId;
+    public string $inlineModalHeader = '';
 }

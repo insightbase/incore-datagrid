@@ -11,4 +11,5 @@ interface InlineEdit
     public function getDefaults(int $id):array;
     public function getOnSuccessCallback():callable;
     public function getForm():?Form;
+    public function getHeader(int $id):string;
 }
