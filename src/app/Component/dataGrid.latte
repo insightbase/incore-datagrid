@@ -9,7 +9,7 @@
                 <a n:href="export" n:if="$isEnabledExport" class="btn btn-primary">{_'button_export'}</a>
             </h3>
             <div class="flex flex-wrap gap-2 lg:gap-5" n:if="$isEnabledGlobalSearch || count($dataGridEntity->getFilters()) > 0">
-                <div class="flex">
+                <div class="flex gap-2">
                     <label class="input input-sm dataGridFilter" n:foreach="$dataGridEntity->getFilters() as $name => $filterEntity" data-url="{link 'changeFilter', $name, 'xxxxxx'}">
                         {$filterEntity->getInput($name, array_key_exists($name, $filter) ? $filter[$name] : null)}
                         {$filterEntity->getInputLabel($name)}
