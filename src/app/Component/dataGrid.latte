@@ -108,7 +108,11 @@
     <div class="modal-content max-w-[600px] top-[10%]">
         <div class="modal-header">
             <h3 class="modal-title">
-                {block title}{/block}
+                {snippet inlineModalHeader}
+                    {block title}
+                        {$inlineModalHeader}
+                    {/block}
+                {/snippet}
             </h3>
             <button class="btn btn-xs btn-icon btn-light" data-modal-dismiss="true">
                 <i class="ki-outline ki-cross">
@@ -117,7 +121,7 @@
         </div>
         <div class="modal-body">
             {snippet inlineModalBody}
-                {embed basicForm, formInlineEdit}{/embed}
+                {embed basicForm, $control->getComponent('formInlineEdit-' . $columnId)}{/embed}
             {/snippet}
         </div>
     </div>
