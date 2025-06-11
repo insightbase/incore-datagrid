@@ -66,6 +66,18 @@ class DataGrid extends Control
         private readonly Language            $languageModel,
     ) {}
 
+    public function handleSortValue(string $values):void{
+        $iterator = 1;
+        foreach(explode(',', $values) as $id){
+            $this->selection->get($id)->update(['position' => $iterator]);
+            $iterator++;
+        }
+        $this->redrawControl('dataGrid');
+        if($this->dataGridEntity->getRedrawSnippetAfterOrdering() !== null){
+            $this->getPresenter()->redrawControl($this->dataGridEntity->getRedrawSnippetAfterOrdering());
+        }
+    }
+
     public function handleRefreshModal(string $columnId, int $id):void{
         $this->init();
         $column = $this->getColumnById($columnId);
@@ -248,6 +260,12 @@ class DataGrid extends Control
 
         if ('' !== $this->sort) {
             $this->selection->order($this->sort.' '.$this->sortDir);
+        }elseif($this->dataGridEntity->getDefaultOrder() !== null){
+            $orderString = $this->dataGridEntity->getDefaultOrder();
+            if($this->dataGridEntity->getDefaultOrderDir() !== null){
+                $orderString .= ' '.$this->dataGridEntity->getDefaultOrderDir()->value;
+            }
+            $this->selection->order($orderString);
         }
 
         $paginator = new Paginator();

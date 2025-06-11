@@ -2,6 +2,7 @@
 
 namespace App\Component\Datagrid\Entity;
 
+use App\Component\Datagrid\SortDirEnum;
 use Nette\Database\Table\Selection;
 use Nette\Utils\Random;
 
@@ -27,6 +28,10 @@ class DataGridEntity
      * @var FilterEntity[]
      */
     private array $filters = [];
+    private bool $ordering = false;
+    private ?string $defaultOrder = null;
+    private ?SortDirEnum $defaultOrderDir = null;
+    private ?string $redrawSnippetAfterOrdering = null;
 
     public function __construct()
     {
@@ -104,5 +109,49 @@ class DataGridEntity
     public function getFilters(): array
     {
         return $this->filters;
+    }
+
+    public function isOrdering(): bool
+    {
+        return $this->ordering;
+    }
+
+    public function setOrdering(bool $ordering = true): self
+    {
+        $this->ordering = $ordering;
+        return $this;
+    }
+
+    public function getDefaultOrder(): ?string
+    {
+        return $this->defaultOrder;
+    }
+
+    public function setDefaultOrder(?string $defaultOrder): self
+    {
+        $this->defaultOrder = $defaultOrder;
+        return $this;
+    }
+
+    public function setDefaultOrderDir(?SortDirEnum $defaultOrderDir): DataGridEntity
+    {
+        $this->defaultOrderDir = $defaultOrderDir;
+        return $this;
+    }
+
+    public function getDefaultOrderDir(): ?SortDirEnum
+    {
+        return $this->defaultOrderDir;
+    }
+
+    public function getRedrawSnippetAfterOrdering(): ?string
+    {
+        return $this->redrawSnippetAfterOrdering;
+    }
+
+    public function setRedrawSnippetAfterOrdering(?string $redrawSnippetAfterOrdering): self
+    {
+        $this->redrawSnippetAfterOrdering = $redrawSnippetAfterOrdering;
+        return $this;
     }
 }

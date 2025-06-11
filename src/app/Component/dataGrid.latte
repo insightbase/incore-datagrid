@@ -24,9 +24,10 @@
         </div>
 
         <div class="card-body">
-            <div class="scrollable-x-auto">
-                <table class="table table-auto table-border">
+            <div n:class="'scrollable-x-auto'" >
+                <table n:class="'table table-auto table-border'">
                     <thead>
+                    <th n:if="$dataGridEntity->isOrdering()"></th>
                     {foreach $columns as $column}
                         <th class="min-w-[200px]">
                             <a n:tag-if="$column->isEnabledSort()" n:class="'sort ajax', $column->getColumn() === $sort && $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? 'asc', $column->getColumn() === $sort && $sortDir === App\Component\Datagrid\SortDirEnum::DESC->value ? 'desc'" n:href="setSort, $column->getColumn(), $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? App\Component\Datagrid\SortDirEnum::DESC->value : App\Component\Datagrid\SortDirEnum::ASC->value">
@@ -42,11 +43,13 @@
                         {_'column_action'}
                     </th>
                     </thead>
-                    <tbody>
+                    <tbody n:class="$dataGridEntity->isOrdering() ? 'draggable-zone'"  data-url-sort="{$control->link('sortValue!', 'xxxxxx')}">
 
                     {foreach $selection as $activeRow}
-                        <tr>
-
+                        <tr n:class="$dataGridEntity->isOrdering() ? 'draggable'" data-id="{$activeRow->id}">
+                        <td n:if="$dataGridEntity->isOrdering()" class="w-[20px] draggable-handle">
+                            <i class="ki-filled ki-burger-menu-6"></i>
+                        </td>
                             {foreach $columns as $column}
                                 {$column->render($activeRow)}
                             {/foreach}
