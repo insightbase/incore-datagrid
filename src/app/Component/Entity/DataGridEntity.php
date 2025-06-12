@@ -4,7 +4,6 @@ namespace App\Component\Datagrid\Entity;
 
 use App\Component\Datagrid\SortDirEnum;
 use Nette\Database\Table\Selection;
-use Nette\Utils\Random;
 
 class DataGridEntity
 {

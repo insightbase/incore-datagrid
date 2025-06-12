@@ -5,6 +5,7 @@ namespace App\Component\Datagrid\Entity;
 use App\Component\Datagrid\InlineEdit;
 use App\Component\Datagrid\SortDirEnum;
 use Nette\Database\Table\ActiveRow;
+use Nette\Utils\Html;
 
 class ColumnEntity
 {
@@ -49,6 +50,10 @@ class ColumnEntity
     protected $getRowCallback;
     public string $modalId = 'datagrid-inline-edit';
     public ?InlineEdit $inlineEdit = null;
+    /**
+     * @var callable
+     */
+    protected $inlineEditInputCallback;
 
     public function __construct(
         public string $column,
@@ -56,6 +61,9 @@ class ColumnEntity
         public bool $sort = false,
         public SortDirEnum $sortDir = SortDirEnum::ASC,
     ) {
+        $this->inlineEditInputCallback = function(ActiveRow $row):Html{
+            return Html::el('input')->type('text')->class('input')->value('xxxx');
+        };
         $this->getInlineEditIdCallback = function (ActiveRow $row): int {
             return $row['id'];
         };
@@ -203,6 +211,17 @@ class ColumnEntity
     public function setInlineEdit(?InlineEdit $inlineEdit): self
     {
         $this->inlineEdit = $inlineEdit;
+        return $this;
+    }
+
+    public function getInlineEditInputCallback(): callable
+    {
+        return $this->inlineEditInputCallback;
+    }
+
+    public function setInlineEditInputCallback(callable $inlineEditInputCallback): self
+    {
+        $this->inlineEditInputCallback = $inlineEditInputCallback;
         return $this;
     }
 }

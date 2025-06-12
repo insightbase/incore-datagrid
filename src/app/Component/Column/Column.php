@@ -52,7 +52,8 @@ class Column extends Control
 
     public function getRow(ActiveRow $activeRow, bool $original = false, bool $toEditor = false): string
     {
-        $value = ($this->columnEntity->getColumnCallback())(($this->columnEntity->getGetRowCallback())($activeRow));
+        $row = ($this->columnEntity->getGetRowCallback())($activeRow);
+        $value = ($this->columnEntity->getColumnCallback())($row, $original);
         if($toEditor){
             try{
                 $json = Json::decode($value, true);
@@ -65,7 +66,7 @@ class Column extends Control
             return '{"time":' . time() . ',"blocks":[{"id":"","type":"paragraph","data":{"text":"' . $value . '"}}],"version":""}';
         }
         if($original) {
-            return $value;
+            return ($this->columnEntity->getColumnCallback())($activeRow, $original);
         }else{
             return $value;
         }
