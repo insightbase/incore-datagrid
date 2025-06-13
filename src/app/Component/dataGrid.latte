@@ -46,15 +46,23 @@
                     <tbody n:class="$dataGridEntity->isOrdering() ? 'draggable-zone'"  data-url-sort="{$control->link('sortValue!', 'xxxxxx')}">
 
                     {foreach $selection as $activeRow}
-                        <tr n:class="$dataGridEntity->isOrdering() ? 'draggable'" data-id="{$activeRow->id}">
+                    {var $clickUrl = $dataGridEntity->getRowClickUrl($activeRow)}
+                    <tr n:class="
+                        $dataGridEntity->isOrdering() ? 'draggable',
+                        $clickUrl ? 'row-hover clickable-row'
+                    " 
+                    data-id="{$activeRow->id}"
+                    {if $clickUrl}data-href="{$clickUrl}"{/if}>
+                        
                         <td n:if="$dataGridEntity->isOrdering()" class="w-[20px] draggable-handle">
                             <i class="ki-filled ki-burger-menu-6"></i>
                         </td>
-                            {foreach $columns as $column}
-                                {$column->render($activeRow)}
-                            {/foreach}
+                        
+                        {foreach $columns as $column}
+                            {$column->render($activeRow)}
+                        {/foreach}
 
-                            <td n:if="count($menus) > 0">
+                        <td n:if="count($menus) > 0">
                                 <div class="menu" data-menu="true">
                                     <div class="menu-item" data-menu-item-offset="0, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
                                         <button class="menu-toggle btn btn-sm btn-icon btn-light btn-clear">

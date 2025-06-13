@@ -32,6 +32,10 @@ class DataGridEntity
     private ?SortDirEnum $defaultOrderDir = null;
     private ?string $redrawSnippetAfterOrdering = null;
 
+    private bool $clickableRows = false;
+    private ?\Closure $rowClickUrlCallback = null;
+
+
     public function __construct()
     {
         $this->getCountCallback = function (Selection $model): int {
@@ -39,7 +43,7 @@ class DataGridEntity
         };
     }
 
-    public function addFilter(FilterEntity $filterEntity):self
+    public function addFilter(FilterEntity $filterEntity): self
     {
         $this->filters['filter_' . count($this->filters)] = $filterEntity;
         return $this;
@@ -152,5 +156,36 @@ class DataGridEntity
     {
         $this->redrawSnippetAfterOrdering = $redrawSnippetAfterOrdering;
         return $this;
+    }
+
+    public function isClickableRows(): bool
+    {
+        return $this->clickableRows;
+    }
+
+    public function setClickableRows(bool $clickableRows = true): self
+    {
+        $this->clickableRows = $clickableRows;
+        return $this;
+    }
+
+    public function getRowClickUrlCallback(): ?\Closure
+    {
+        return $this->rowClickUrlCallback;
+    }
+
+    public function setRowClickUrlCallback(?\Closure $rowClickUrlCallback): self
+    {
+        $this->rowClickUrlCallback = $rowClickUrlCallback;
+        return $this;
+    }
+
+    public function getRowClickUrl($activeRow): ?string
+    {
+        if (!$this->clickableRows || !$this->rowClickUrlCallback) {
+            return null;
+        }
+
+        return ($this->rowClickUrlCallback)($activeRow);
     }
 }
