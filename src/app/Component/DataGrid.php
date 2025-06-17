@@ -8,6 +8,7 @@ use App\Component\Datagrid\Dto\ReturnInlineEditCallback;
 use App\Component\Datagrid\Entity\BooleanColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Exception\FilterHasNotSetChangeCallbackException;
+use App\Component\Datagrid\Menu\Menu;
 use App\Component\Datagrid\Menu\MenuFactory;
 use App\Component\EditorJs\EditorJsFacade;
 use App\Component\Image\ImageControl;
@@ -47,6 +48,9 @@ class DataGrid extends Control
      */
     private array $columns = [];
     private bool $enableGlobalSearch = false;
+    /**
+     * @var Menu[]
+     */
     private array $menus = [];
     private bool $isInit = false;
     #[Persistent]

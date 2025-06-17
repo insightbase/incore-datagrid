@@ -46,13 +46,13 @@
                     <tbody n:class="$dataGridEntity->isOrdering() ? 'draggable-zone'"  data-url-sort="{$control->link('sortValue!', 'xxxxxx')}">
 
                     {foreach $selection as $activeRow}
-                    {var $clickUrl = $dataGridEntity->getRowClickUrl($activeRow)}
-                    <tr n:class="
-                        $dataGridEntity->isOrdering() ? 'draggable',
-                        $clickUrl ? 'row-hover clickable-row'
-                    " 
-                    data-id="{$activeRow->id}"
-                    {if $clickUrl}data-href="{$clickUrl}"{/if}>
+                        {var $clickUrl = $dataGridEntity->getRowClickUrl($activeRow)}
+                        <tr n:class="
+                            $dataGridEntity->isOrdering() ? 'draggable',
+                            $clickUrl ? 'row-hover clickable-row'
+                        "
+                        data-id="{$activeRow->id}"
+                        {if $clickUrl}data-href="{$clickUrl}"{/if}>
                         
                         <td n:if="$dataGridEntity->isOrdering()" class="w-[20px] draggable-handle">
                             <i class="ki-filled ki-burger-menu-6"></i>
@@ -73,7 +73,7 @@
                                             <div class="menu-item" n:foreach="$menus as $menu" n:if="$presenter->getUser()->isAllowed($module->system_name, $menu->plink) && ($menu->getEntity()->getShowCallback())($activeRow)">
                                                 {var array $params['id'] = $activeRow['id']}
                                                 {php $params += $menu->getEntity()->getParams()}
-                                                <a class="menu-link" href="{plink $menu->plink ...$params}">
+                                                <a n:class="'menu-link', $menu->getEntity() instanceof App\Component\Datagrid\Entity\DeleteMenuEntity ? 'confirmDelete'" href="{plink $menu->plink ...$params}" {if $menu->getEntity() instanceof App\Component\Datagrid\Entity\DeleteMenuEntity}data-modal-toggle="#confirmDelete"{/if}>
                                                     <span class="menu-icon" n:if="$menu->getIcon() !== null">
                                                         <i class="{$menu->getIcon()}"></i>
                                                     </span>
