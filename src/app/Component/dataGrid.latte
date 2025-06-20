@@ -49,7 +49,7 @@
                         {var $clickUrl = $dataGridEntity->getRowClickUrl($activeRow)}
                         <tr n:class="
                             $dataGridEntity->isOrdering() ? 'draggable',
-                            $clickUrl ? 'row-hover clickable-row'
+                            $clickUrl ? 'row-hover clickable-row cursor-pointer'
                         "
                         data-id="{$activeRow->id}"
                         {if $clickUrl}data-href="{$clickUrl}"{/if}>
