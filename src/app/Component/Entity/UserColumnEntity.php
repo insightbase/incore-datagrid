@@ -15,7 +15,7 @@ class UserColumnEntity extends ColumnEntity
     )
     {
         parent::__construct($column, $label, $sort, $sortDir);
-        $this->setGetRowCallback(function(ActiveRow $row) use ($column):ActiveRow{
+        $this->setGetRowCallback(function(ActiveRow $row) use ($column):?ActiveRow{
             return $row->ref('user', $column);
         });
         $this->templateFile = 'user.latte';
