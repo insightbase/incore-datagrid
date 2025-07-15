@@ -45,49 +45,54 @@
                     </thead>
                     <tbody n:class="$dataGridEntity->isOrdering() ? 'draggable-zone'"  data-url-sort="{$control->link('sortValue!', 'xxxxxx')}">
 
-                    {foreach $selection as $activeRow}
-                        {var $clickUrl = $dataGridEntity->getRowClickUrl($activeRow)}
-                        <tr n:class="
-                            $dataGridEntity->isOrdering() ? 'draggable',
-                            $clickUrl ? 'row-hover clickable-row cursor-pointer'
-                        "
-                        data-id="{$activeRow->id}"
-                        {if $clickUrl}data-href="{$clickUrl}"{/if}>
-                        
-                        <td n:if="$dataGridEntity->isOrdering()" class="w-[20px] draggable-handle">
-                            <i class="ki-filled ki-burger-menu-6"></i>
-                        </td>
-                        
-                        {foreach $columns as $column}
-                            {$column->render($activeRow)}
-                        {/foreach}
+                    {snippetArea bodyArea}
+                        {foreach $selection as $activeRow}
+                            {var $clickUrl = $dataGridEntity->getRowClickUrl($activeRow)}
+                            <tr n:class="
+                                $dataGridEntity->isOrdering() ? 'draggable',
+                                $clickUrl ? 'row-hover clickable-row cursor-pointer'
+                            "
+                                data-id="{$activeRow->id}"
+                                {if $clickUrl}data-href="{$clickUrl}"{/if}>
 
-                        <td n:if="count($menus) > 0">
-                                <div class="menu" data-menu="true">
-                                    <div class="menu-item" data-menu-item-offset="0, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
-                                        <button class="menu-toggle btn btn-sm btn-icon btn-light btn-clear">
-                                            <i class="ki-filled ki-dots-vertical">
-                                            </i>
-                                        </button>
-                                        <div class="menu-dropdown menu-default w-full max-w-[175px]" data-menu-dismiss="true">
-                                            <div class="menu-item" n:foreach="$menus as $menu" n:if="$presenter->getUser()->isAllowed($module?->system_name, $menu->plink) && ($menu->getEntity()->getShowCallback())($activeRow)">
-                                                {var array $params['id'] = $activeRow['id']}
-                                                {php $params += $menu->getEntity()->getParams()}
-                                                <a n:class="'menu-link', $menu->getEntity() instanceof App\Component\Datagrid\Entity\DeleteMenuEntity ? 'confirmDelete'" href="{plink $menu->plink ...$params}" {if $menu->getEntity() instanceof App\Component\Datagrid\Entity\DeleteMenuEntity}data-modal-toggle="#confirmDelete"{/if}>
-                                                    <span class="menu-icon" n:if="$menu->getIcon() !== null">
-                                                        <i class="{$menu->getIcon()}"></i>
-                                                    </span>
-                                                    <span class="menu-title">
-                                                        {$menu->label}
-                                                    </span>
-                                                </a>
+                                <td n:if="$dataGridEntity->isOrdering()" class="w-[20px] draggable-handle">
+                                    <i class="ki-filled ki-burger-menu-6"></i>
+                                </td>
+
+                                {foreach $columns as $column}
+                                    <td n:snippet="column-{$activeRow->id}-{$column->getId()}" n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit'">
+                                        <span class="dataHolder" data-inline-edit-url-refresh="{$control->link('refreshModal', $column->getId(), $activeRow['id'])}" data-inline-edit-url="{$control->link('inlineEdit', $column->getId(), $column->getInlineEditId($activeRow), 'xxxx')}" data-value="{$column->getRow($activeRow, true)|noescape}" data-inline-input="{($column->getColumnEntity()->getInlineEditInputCallback())($activeRow)}"></span>
+                                        {$column->render($activeRow)}
+                                    </td>
+                                {/foreach}
+
+                                <td n:if="count($menus) > 0">
+                                    <div class="menu" data-menu="true">
+                                        <div class="menu-item" data-menu-item-offset="0, 10px" data-menu-item-placement="bottom-end" data-menu-item-placement-rtl="bottom-start" data-menu-item-toggle="dropdown" data-menu-item-trigger="click|lg:click">
+                                            <button class="menu-toggle btn btn-sm btn-icon btn-light btn-clear">
+                                                <i class="ki-filled ki-dots-vertical">
+                                                </i>
+                                            </button>
+                                            <div class="menu-dropdown menu-default w-full max-w-[175px]" data-menu-dismiss="true">
+                                                <div class="menu-item" n:foreach="$menus as $menu" n:if="$presenter->getUser()->isAllowed($module?->system_name, $menu->plink) && ($menu->getEntity()->getShowCallback())($activeRow)">
+                                                    {var array $params['id'] = $activeRow['id']}
+                                                    {php $params += $menu->getEntity()->getParams()}
+                                                    <a n:class="'menu-link', $menu->getEntity() instanceof App\Component\Datagrid\Entity\DeleteMenuEntity ? 'confirmDelete'" href="{plink $menu->plink ...$params}" {if $menu->getEntity() instanceof App\Component\Datagrid\Entity\DeleteMenuEntity}data-modal-toggle="#confirmDelete"{/if}>
+                                                        <span class="menu-icon" n:if="$menu->getIcon() !== null">
+                                                            <i class="{$menu->getIcon()}"></i>
+                                                        </span>
+                                                        <span class="menu-title">
+                                                            {$menu->label}
+                                                        </span>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
-                    {/foreach}
+                                </td>
+                            </tr>
+                        {/foreach}
+                    {/snippetArea}
                     </tbody>
                 </table>
             </div>
