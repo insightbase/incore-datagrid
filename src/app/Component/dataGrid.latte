@@ -70,7 +70,7 @@
                                             </i>
                                         </button>
                                         <div class="menu-dropdown menu-default w-full max-w-[175px]" data-menu-dismiss="true">
-                                            <div class="menu-item" n:foreach="$menus as $menu" n:if="$presenter->getUser()->isAllowed($module->system_name, $menu->plink) && ($menu->getEntity()->getShowCallback())($activeRow)">
+                                            <div class="menu-item" n:foreach="$menus as $menu" n:if="$presenter->getUser()->isAllowed($module?->system_name, $menu->plink) && ($menu->getEntity()->getShowCallback())($activeRow)">
                                                 {var array $params['id'] = $activeRow['id']}
                                                 {php $params += $menu->getEntity()->getParams()}
                                                 <a n:class="'menu-link', $menu->getEntity() instanceof App\Component\Datagrid\Entity\DeleteMenuEntity ? 'confirmDelete'" href="{plink $menu->plink ...$params}" {if $menu->getEntity() instanceof App\Component\Datagrid\Entity\DeleteMenuEntity}data-modal-toggle="#confirmDelete"{/if}>
