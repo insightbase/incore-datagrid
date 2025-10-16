@@ -37,6 +37,7 @@ class Column extends Control
     {
         $this->template->column = $this;
         $this->template->activeRow = ($this->columnEntity->getGetRowCallback())($activeRow);
+        $this->template->activeRowOrig = $activeRow;
         $this->template->render(dirname(__FILE__) . '/' . $this->columnEntity->templateFile);
     }
 

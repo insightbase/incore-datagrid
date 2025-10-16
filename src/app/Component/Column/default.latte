@@ -1,8 +1,6 @@
 {templateType App\Component\Datagrid\Column\Template}
 
-{var string $rowText = $column->getRow($activeRow)}
-{var string $rowTextOriginal = $column->getRow($activeRow, true)}
-{var string $rowTextEditor = $column->getRow($activeRow, toEditor: true)}
+{var string $rowText = $column->getRow($activeRowOrig)}
 
     <a href="{$control->getParent()->link('columnClick', $column->getId(), $activeRow['id'])}" n:tag-if="$column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null" class="ajax" data-naja-history="off">
         <span class="text">

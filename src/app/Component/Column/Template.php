@@ -8,4 +8,5 @@ class Template extends \Nette\Bridges\ApplicationLatte\Template
 {
     public Column $column;
     public ActiveRow $activeRow;
+    public ActiveRow $activeRowOrig;
 }
