@@ -13,6 +13,10 @@ class MenuEntity
      */
     private $showCallback;
     private array $params = [];
+    /**
+     * @var ?callable
+     */
+    private $customLinkCallback = null;
 
     public function __construct(
         public string $label,
@@ -57,5 +61,15 @@ class MenuEntity
         $this->params[$key] = $value;
 
         return $this;
+    }
+
+    public function getCustomLinkCallback(): ?callable
+    {
+        return $this->customLinkCallback;
+    }
+
+    public function setCustomLinkCallback(?callable $customLinkCallback): void
+    {
+        $this->customLinkCallback = $customLinkCallback;
     }
 }
