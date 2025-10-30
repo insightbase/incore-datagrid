@@ -68,8 +68,9 @@ class MenuEntity
         return $this->customLinkCallback;
     }
 
-    public function setCustomLinkCallback(?callable $customLinkCallback): void
+    public function setCustomLinkCallback(?callable $customLinkCallback): self
     {
         $this->customLinkCallback = $customLinkCallback;
+        return $this;
     }
 }
