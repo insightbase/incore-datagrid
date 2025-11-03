@@ -49,8 +49,4 @@ class DataGridTemplate extends Template
     public DataGrid $control;
     public string $columnId;
     public string $inlineModalHeader = '';
-    /**
-     * @var CustomMenu[]
-     */
-    public array $customMenus;
 }

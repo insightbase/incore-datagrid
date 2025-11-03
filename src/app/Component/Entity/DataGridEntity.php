@@ -2,6 +2,7 @@
 
 namespace App\Component\Datagrid\Entity;
 
+use App\Component\Datagrid\Menu\Custom\CustomMenu;
 use App\Component\Datagrid\SortDirEnum;
 use Nette\Database\Table\Selection;
 
@@ -35,12 +36,22 @@ class DataGridEntity
     private bool $clickableRows = false;
     private ?\Closure $rowClickUrlCallback = null;
     private ?string $headerTitle = null;
+    /**
+     * @var CustomMenu[]
+     */
+    private array $customMenu = [];
 
     public function __construct()
     {
         $this->getCountCallback = function (Selection $model): int {
             return $model->count('*');
         };
+    }
+
+    public function addCustomMenu(CustomMenu $customMenu):self
+    {
+        $this->customMenu[] = $customMenu;
+        return $this;
     }
 
     public function addFilter(FilterEntity $filterEntity): self
@@ -198,5 +209,10 @@ class DataGridEntity
     {
         $this->headerTitle = $headerTitle;
         return $this;
+    }
+
+    public function getCustomMenu(): array
+    {
+        return $this->customMenu;
     }
 }

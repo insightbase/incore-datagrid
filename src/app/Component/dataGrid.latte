@@ -70,8 +70,8 @@
                                     </td>
                                 {/foreach}
 
-                                <td n:if="count($menus) > 0 || count($customMenus) > 0">
-                                    {foreach $customMenus as $customMenu}
+                                <td n:if="count($menus) > 0 || count($dataGridEntity->getCustomMenu()) > 0">
+                                    {foreach $dataGridEntity->getCustomMenu() as $customMenu}
                                         {$customMenu->render($activeRow)}
                                     {/foreach}
                                     <div class="menu" data-menu="true" n:if="count($menus) > 0">
