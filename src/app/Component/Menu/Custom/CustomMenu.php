@@ -11,7 +11,7 @@ use Nette\Database\Table\ActiveRow;
 class CustomMenu extends Control
 {
     public function __construct(
-        private readonly callable $linkCallback,
+        private $linkCallback,
         private readonly string $caption,
         private readonly string $icon
     )

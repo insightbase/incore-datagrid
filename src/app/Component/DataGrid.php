@@ -8,6 +8,7 @@ use App\Component\Datagrid\Dto\ReturnInlineEditCallback;
 use App\Component\Datagrid\Entity\BooleanColumnEntity;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Exception\FilterHasNotSetChangeCallbackException;
+use App\Component\Datagrid\Menu\Custom\CustomMenu;
 use App\Component\Datagrid\Menu\Menu;
 use App\Component\Datagrid\Menu\MenuFactory;
 use App\Component\EditorJs\EditorJsFacade;
@@ -56,6 +57,10 @@ class DataGrid extends Control
     #[Persistent]
     public array $filter = [];
     private string $columnId = 'default';
+    /**
+     * @var CustomMenu[]
+     */
+    private array $customMenu = [];
 
     public function __construct(
         private readonly Selection           $selection,
@@ -69,6 +74,12 @@ class DataGrid extends Control
         private readonly FormFactory         $formFactory,
         private readonly Language            $languageModel,
     ) {}
+
+    public function addCustomMenu(CustomMenu $customMenu):self
+    {
+        $this->customMenu[] = $customMenu;
+        return $this;
+    }
 
     public function handleSortValue(string $values):void{
         $iterator = 1;
@@ -307,6 +318,7 @@ class DataGrid extends Control
         }
         $this->template->control = $this;
         $this->template->columnId = $this->columnId;
+        $this->template->customMenus = $this->customMenu;
 
         $this->template->setTranslator($this->translator);
         $this->template->setFile(__DIR__.'/dataGrid.latte');

@@ -4,11 +4,10 @@ namespace App\Component\Datagrid;
 
 use App\Component\Datagrid\Column\Column;
 use App\Component\Datagrid\Entity\DataGridEntity;
+use App\Component\Datagrid\Menu\Custom\CustomMenu;
 use App\Component\Datagrid\Menu\Menu;
 use App\Model\Entity\LanguageEntity;
 use App\Model\Entity\ModuleEntity;
-use App\UI\Accessory\Admin\Form\Form;
-use Nette\Application\UI\Control;
 use Nette\Application\UI\Presenter;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Database\Table\ActiveRow;
@@ -50,4 +49,8 @@ class DataGridTemplate extends Template
     public DataGrid $control;
     public string $columnId;
     public string $inlineModalHeader = '';
+    /**
+     * @var CustomMenu[]
+     */
+    public array $customMenus;
 }
