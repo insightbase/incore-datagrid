@@ -10,6 +10,8 @@ use Nette\Database\Table\ActiveRow;
  */
 class CustomMenu extends Control
 {
+    private string $target = '_blank';
+
     public function __construct(
         private $linkCallback,
         private readonly string $caption,
@@ -24,8 +26,20 @@ class CustomMenu extends Control
         $this->template->caption = $this->caption;
         $this->template->icon = $this->icon;
         $this->template->activeRow = $activeRow;
+        $this->template->target = $this->target;
 
         $this->template->setFile(__DIR__ . '/customMenu.latte');
         $this->template->render();
+    }
+
+    public function getTarget(): string
+    {
+        return $this->target;
+    }
+
+    public function setTarget(string $target): self
+    {
+        $this->target = $target;
+        return $this;
     }
 }

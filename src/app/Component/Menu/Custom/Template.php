@@ -11,4 +11,5 @@ class Template extends \Nette\Bridges\ApplicationLatte\Template
      */
     public $linkCallback;
     public \Nette\Database\Table\ActiveRow $activeRow;
+    public string $target;
 }
