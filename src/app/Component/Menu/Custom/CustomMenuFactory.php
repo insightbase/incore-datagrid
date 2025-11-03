@@ -4,5 +4,5 @@ namespace App\Component\Datagrid\Menu\Custom;
 
 interface CustomMenuFactory
 {
-    public function create(string $link, string $caption, string $icon):CustomMenu;
+    public function create(callable $linkCallback, string $caption, string $icon):CustomMenu;
 }

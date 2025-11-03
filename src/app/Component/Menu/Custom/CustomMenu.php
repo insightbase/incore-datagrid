@@ -3,6 +3,7 @@
 namespace App\Component\Datagrid\Menu\Custom;
 
 use Nette\Application\UI\Control;
+use Nette\Database\Table\ActiveRow;
 
 /**
  * @property-read Template $template
@@ -10,18 +11,20 @@ use Nette\Application\UI\Control;
 class CustomMenu extends Control
 {
     public function __construct(
-        private readonly string $link,
+        private readonly callable $linkCallback,
         private readonly string $caption,
         private readonly string $icon
     )
     {
     }
 
-    public function render():void
+    public function render(ActiveRow $activeRow):void
     {
-        $this->template->link = $this->link;
+        $this->template->linkCallback = $this->linkCallback;
         $this->template->caption = $this->caption;
         $this->template->icon = $this->icon;
+        $this->template->activeRow = $activeRow;
+
         $this->template->setFile(__DIR__ . '/customMenu.latte');
         $this->template->render();
     }
