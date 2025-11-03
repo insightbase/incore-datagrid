@@ -20,9 +20,15 @@ class UserColumnEntity extends ColumnEntity
         $this->setGetRowCallback(function(ActiveRow $row) use ($column):?ActiveRow{
             return $row->ref('user', $column);
         });
-        $this->getColumnCallback = function (ActiveRow $activeRow, bool $original = false): string {
-            if(array_key_exists('user_id', $activeRow->toArray())) {
-                $user = $this->userModel->get($activeRow['user_id']);
+        $this->getColumnCallback = function (?ActiveRow $activeRow, bool $original = false): string {
+            if($activeRow === null){
+                return '';
+            }
+            if(array_key_exists($this->column, $activeRow->toArray())) {
+                if($activeRow->{$this->column} === null){
+                    return '';
+                }
+                $user = $this->userModel->get($activeRow[$this->column]);
                 return (string)$user->firstname . ' ' . $user->lastname;
             }else{
                 return (string)$activeRow['firstname'] . ' ' . $activeRow['lastname'];
