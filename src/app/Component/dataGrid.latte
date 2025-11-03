@@ -5,7 +5,11 @@
     <div class="card card-grid min-w-full" n:snippet="content">
         <div class="card-header flex-wrap gap-2">
             <h3 class="card-title font-medium text-sm">
-                {_'paginator_show %perPage% from %count%', 'perPage' => $paginator->getLastItemOnPage(), 'count' => $paginator->getItemCount()}
+                {if $dataGridEntity->getHeaderTitle() === null}
+                    {_'paginator_show %perPage% from %count%', 'perPage' => $paginator->getLastItemOnPage(), 'count' => $paginator->getItemCount()}
+                {else}
+                    {$dataGridEntity->getHeaderTitle()}
+                {/if}
                 <a n:href="export" n:if="$isEnabledExport" class="btn btn-primary">{_'button_export'}</a>
             </h3>
             <div class="flex flex-wrap gap-2 lg:gap-5" n:if="$isEnabledGlobalSearch || count($dataGridEntity->getFilters()) > 0">

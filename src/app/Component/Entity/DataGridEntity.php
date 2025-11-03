@@ -34,7 +34,7 @@ class DataGridEntity
 
     private bool $clickableRows = false;
     private ?\Closure $rowClickUrlCallback = null;
-
+    private ?string $headerTitle = null;
 
     public function __construct()
     {
@@ -187,5 +187,16 @@ class DataGridEntity
         }
 
         return ($this->rowClickUrlCallback)($activeRow);
+    }
+
+    public function getHeaderTitle(): ?string
+    {
+        return $this->headerTitle;
+    }
+
+    public function setHeaderTitle(?string $headerTitle): self
+    {
+        $this->headerTitle = $headerTitle;
+        return $this;
     }
 }
