@@ -54,6 +54,7 @@ class ColumnEntity
      * @var callable
      */
     protected $inlineEditInputCallback;
+    public ?string $templateDir = null;
 
     public function __construct(
         public string $column,

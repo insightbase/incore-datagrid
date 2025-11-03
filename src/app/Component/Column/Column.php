@@ -38,7 +38,11 @@ class Column extends Control
         $this->template->column = $this;
         $this->template->activeRow = ($this->columnEntity->getGetRowCallback())($activeRow);
         $this->template->activeRowOrig = $activeRow;
-        $this->template->render(dirname(__FILE__) . '/' . $this->columnEntity->templateFile);
+        $dir = dirname(__FILE__);
+        if($this->columnEntity->templateDir !== null){
+            $dir = $this->columnEntity->templateDir;
+        }
+        $this->template->render($dir . '/' . $this->columnEntity->templateFile);
     }
 
     public function getInlineEditId(ActiveRow $row): string
