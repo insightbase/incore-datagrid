@@ -18,12 +18,14 @@ class BooleanColumnEntity extends ColumnEntity
         parent::__construct($column, $label, $sort, $sortDir);
         $this->setGetColumnCallback(function (ActiveRow $activeRow): string {
             if ($activeRow[$this->column]) {
-                $class = 'ki-filled ki-check-squared text-success';
+                $input = Html::el('input')->class('checkbox')->type('checkbox')->checked($activeRow[$this->column]);
             } else {
-                $class = 'ki-filled ki-cross-square text-danger';
+                $input = Html::el('input')->class('checkbox')->type('checkbox');
             }
 
-            return Html::el('i')->class($class);
+            return Html::el('span')->class('switch')->addHtml(
+                $input
+            );
         });
         $this->setGetColumnExportCallback(function (ActiveRow $activeRow): string {
             return (int) $activeRow[$this->column];
