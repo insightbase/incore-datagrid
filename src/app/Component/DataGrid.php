@@ -232,6 +232,12 @@ class DataGrid extends Control
     public function init(): void
     {
         if (!$this->isInit) {
+            $iterator = 1;
+            foreach($this->dataGridEntity->getCustomMenu() as $customMenu){
+                $this->addComponent($customMenu, 'customMenu' . $iterator);
+                $iterator++;
+            }
+
             foreach ($this->dataGridEntity->getColumns() as $column) {
                 $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label, $column, 'column_'.count($this->columns))
                     ->setEnabledSort($column->isEnabledSort())->setParent($this)
