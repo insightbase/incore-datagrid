@@ -55,6 +55,7 @@ class ColumnEntity
      */
     protected $inlineEditInputCallback;
     public ?string $templateDir = null;
+    public ?string $class = null;
 
     public function __construct(
         public string $column,
@@ -223,6 +224,17 @@ class ColumnEntity
     public function setInlineEditInputCallback(callable $inlineEditInputCallback): self
     {
         $this->inlineEditInputCallback = $inlineEditInputCallback;
+        return $this;
+    }
+
+    public function getClass(): ?string
+    {
+        return $this->class;
+    }
+
+    public function setClass(?string $class): self
+    {
+        $this->class = $class;
         return $this;
     }
 }

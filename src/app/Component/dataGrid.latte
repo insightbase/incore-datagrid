@@ -64,7 +64,7 @@
                                 </td>
 
                                 {foreach $columns as $column}
-                                    <td n:snippet="column-{$activeRow->id}-{$column->getId()}" n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit'">
+                                    <td n:snippet="column-{$activeRow->id}-{$column->getId()}" n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit', $column->getColumnEntity()->getClass()">
                                         <span class="dataHolder" data-inline-edit-url-refresh="{$control->link('refreshModal', $column->getId(), $activeRow['id'])}" data-inline-edit-url="{$control->link('inlineEdit', $column->getId(), $column->getInlineEditId($activeRow), 'xxxx')}" data-value="{$column->getRow($activeRow, true)|noescape}" data-inline-input="{($column->getColumnEntity()->getInlineEditInputCallback())($activeRow)}"></span>
                                         {$column->render($activeRow)}
                                     </td>
