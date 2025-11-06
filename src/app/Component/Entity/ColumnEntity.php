@@ -57,6 +57,7 @@ class ColumnEntity
     public ?string $templateDir = null;
     public ?string $class = null;
     public ?string $classHeader = 'min-w-[200px]';
+    private ?string $link = null;
 
     public function __construct(
         public string $column,
@@ -247,6 +248,17 @@ class ColumnEntity
     public function setClassHeader(?string $classHeader): self
     {
         $this->classHeader = $classHeader;
+        return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(?string $link): self
+    {
+        $this->link = $link;
         return $this;
     }
 }
