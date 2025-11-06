@@ -33,7 +33,7 @@
                     <thead>
                     <th n:if="$dataGridEntity->isOrdering()"></th>
                     {foreach $columns as $column}
-                        <th class="min-w-[200px]">
+                        <th n:class="$column->getColumnEntity()->getClassHeader()">
                             <a n:tag-if="$column->isEnabledSort()" n:class="'sort ajax', $column->getColumn() === $sort && $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? 'asc', $column->getColumn() === $sort && $sortDir === App\Component\Datagrid\SortDirEnum::DESC->value ? 'desc'" n:href="setSort, $column->getColumn(), $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? App\Component\Datagrid\SortDirEnum::DESC->value : App\Component\Datagrid\SortDirEnum::ASC->value">
                                 <span class="sort-label text-gray-700 font-normal">
                                     {$column->getLabel()}

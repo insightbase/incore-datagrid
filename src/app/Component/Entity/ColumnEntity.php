@@ -56,6 +56,7 @@ class ColumnEntity
     protected $inlineEditInputCallback;
     public ?string $templateDir = null;
     public ?string $class = null;
+    public ?string $classHeader = 'min-w-[200px]';
 
     public function __construct(
         public string $column,
@@ -235,6 +236,17 @@ class ColumnEntity
     public function setClass(?string $class): self
     {
         $this->class = $class;
+        return $this;
+    }
+
+    public function getClassHeader(): ?string
+    {
+        return $this->classHeader;
+    }
+
+    public function setClassHeader(?string $classHeader): self
+    {
+        $this->classHeader = $classHeader;
         return $this;
     }
 }
