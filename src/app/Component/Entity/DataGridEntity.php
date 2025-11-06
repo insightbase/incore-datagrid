@@ -41,11 +41,27 @@ class DataGridEntity
      */
     private array $customMenu = [];
 
+    /**
+     * @var ?callable
+     */
+    private $customSearchGlobalCallback = null;
+
     public function __construct()
     {
         $this->getCountCallback = function (Selection $model): int {
             return $model->count('*');
         };
+    }
+
+    public function getCustomSearchGlobalCallback(): ?callable
+    {
+        return $this->customSearchGlobalCallback;
+    }
+
+    public function setCustomSearchGlobalCallback(callable $customSearchGlobalCallback): self
+    {
+        $this->customSearchGlobalCallback = $customSearchGlobalCallback;
+        return $this;
     }
 
     public function addCustomMenu(CustomMenu $customMenu):self

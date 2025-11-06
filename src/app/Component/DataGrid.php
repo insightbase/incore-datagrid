@@ -57,10 +57,6 @@ class DataGrid extends Control
     #[Persistent]
     public array $filter = [];
     private string $columnId = 'default';
-    /**
-     * @var ?callable
-     */
-    private $customSearchGlobalCallback = null;
 
     public function __construct(
         private readonly Selection           $selection,
@@ -95,17 +91,6 @@ class DataGrid extends Control
         $this->template->inlineModalHeader = $column->getColumnEntity()->inlineEdit->getHeader($id);
         $this->redrawControl('inlineModalBody');
         $this->redrawControl('inlineModalHeader');
-    }
-
-    public function getCustomSearchGlobalCallback(): ?callable
-    {
-        return $this->customSearchGlobalCallback;
-    }
-
-    public function setCustomSearchGlobalCallback(callable $customSearchGlobalCallback): self
-    {
-        $this->customSearchGlobalCallback = $customSearchGlobalCallback;
-        return $this;
     }
 
     protected function createComponentFormInlineEdit():Multiplier{
@@ -358,8 +343,8 @@ class DataGrid extends Control
     private function initModel(): void
     {
         if ('' !== $this->globalSearch) {
-            if($this->customSearchGlobalCallback !== null){
-                ($this->customSearchGlobalCallback)($this->selection, $this->globalSearch);
+            if($this->dataGridEntity->getCustomSearchGlobalCallback() !== null){
+                ($this->dataGridEntity->getCustomSearchGlobalCallback())($this->selection, $this->globalSearch);
             }else {
                 $query = [];
                 $params = [];
