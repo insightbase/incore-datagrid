@@ -1,7 +1,7 @@
 {templateType App\Component\Datagrid\DataGridTemplate}
 {import $basicFormFile}
+<div class="dataGrid">
 {snippet dataGrid}
-
     <div class="card card-grid min-w-full" n:snippet="content">
         <div class="card-header flex-wrap gap-2">
             <h3 class="card-title font-medium text-sm">
@@ -128,6 +128,7 @@
         </div>
     </div>
 {/snippet}
+</div>
 
 <div class="modal" data-modal="true" id="datagrid-inline-edit">
     <div class="modal-content max-w-[1000px] top-[10%] w-full">
