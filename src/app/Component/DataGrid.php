@@ -153,7 +153,7 @@ class DataGrid extends Control
             foreach ($this->columns as $column) {
                 $data[] = $column->getRowExport($row);
             }
-            fputcsv($handle, $data, ",", '"', "\\");
+            fputcsv($handle, $this->iconv($data), ",", '"', "\\");
         }
         fclose($handle);
 
