@@ -13,6 +13,9 @@ class DateTimeColumnEntity extends ColumnEntity
     {
         parent::__construct($column, $label, $sort, $sortDir);
         $this->setGetColumnCallback(function (ActiveRow $activeRow): string {
+            if($activeRow[$this->column] === null){
+                return '';
+            }
             return $activeRow[$this->column]->format($this->format);
         });
     }
