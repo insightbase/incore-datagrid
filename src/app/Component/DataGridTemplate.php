@@ -49,4 +49,5 @@ class DataGridTemplate extends Template
     public DataGrid $control;
     public string $columnId;
     public string $inlineModalHeader = '';
+    public ?string $sortColumn;
 }

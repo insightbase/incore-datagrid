@@ -43,6 +43,7 @@ class DataGrid extends Control
     public int $page = 1;
     #[Persistent]
     public string $globalSearch = '';
+    private ?string $sortColumn = null;
 
     /**
      * @var array<Column>
@@ -242,9 +243,13 @@ class DataGrid extends Control
                 $this->columns[] = $columnGrid = $this->columnFactory->create($column->column, $column->label, $column, 'column_'.count($this->columns))
                     ->setEnabledSort($column->isEnabledSort())->setParent($this)
                 ;
-                if ($column->sort && '' === $this->sort) {
+                if($this->sort === $columnGrid->getId()){
+                    $this->sort = ($column->getSortString())();
+                    $this->sortColumn = $columnGrid->getId();
+                }elseif ($column->sort && '' === $this->sort) {
                     $this->sort = $column->column;
                     $this->sortDir = $column->sortDir->value;
+                    $this->sortColumn = $columnGrid->getId();
                 }
                 if ($column->isEnableSearchGlobal()) {
                     $this->enableGlobalSearch = true;
@@ -305,6 +310,7 @@ class DataGrid extends Control
         $this->template->presenter = $this->getPresenter();
         $this->template->dataGridEntity = $this->dataGridEntity;
         $this->template->filter = $this->filter;
+        $this->template->sortColumn = $this->sortColumn;
         $this->template->basicFormFile = $this->parameterBag->rootDir . '/vendor/incore/core/src/app/UI/Accessory/Admin/Form/basic-form.latte';
         foreach ($this->languageModel->getToTranslate() as $language) {
             if ($language->is_default) {

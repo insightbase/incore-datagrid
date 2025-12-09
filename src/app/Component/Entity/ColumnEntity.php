@@ -58,6 +58,10 @@ class ColumnEntity
     public ?string $class = null;
     public ?string $classHeader = 'min-w-[200px]';
     private ?string $link = null;
+    /**
+     * @var ?callable
+     */
+    protected $sortString = null;
 
     public function __construct(
         public string $column,
@@ -84,6 +88,20 @@ class ColumnEntity
         $this->getColumnExportCallback = function (ActiveRow $activeRow): string {
             return (string) $activeRow[$this->column];
         };
+        $this->sortString = function():string{
+            return $this->column;
+        };
+    }
+
+    public function getSortString(): ?callable
+    {
+        return $this->sortString;
+    }
+
+    public function setSortString(callable $sortString): self
+    {
+        $this->sortString = $sortString;
+        return $this;
     }
 
     public function disableSort(): self
