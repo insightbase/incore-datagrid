@@ -71,7 +71,7 @@ class Column extends Control
             return '{"time":' . time() . ',"blocks":[{"id":"","type":"paragraph","data":{"text":"' . $value . '"}}],"version":""}';
         }
         if($original) {
-            return ($this->columnEntity->getColumnCallback())($activeRow, $original);
+            return ($this->columnEntity->getColumnCallback())($row, $original);
         }else{
             return $value;
         }
