@@ -83,10 +83,30 @@ class ColumnEntity
             return $activeRow;
         };
         $this->getColumnCallback = function (ActiveRow $activeRow, bool $original = false): string {
-            return (string) $activeRow[$this->column];
+            $value = $activeRow[$this->column];
+            if($value instanceof \DateInterval){
+                $base = new \DateTimeImmutable('1970-01-01 00:00:00');
+
+                $dt = $value->invert
+                    ? $base->add($value)   // když je záporný
+                    : $base->sub($value);  // když je kladný
+                $value = $dt->format('H:i');
+
+            }
+            return (string) $value;
         };
         $this->getColumnExportCallback = function (ActiveRow $activeRow): string {
-            return (string) $activeRow[$this->column];
+            $value = $activeRow[$this->column];
+            if($value instanceof \DateInterval){
+                $base = new \DateTimeImmutable('1970-01-01 00:00:00');
+
+                $dt = $value->invert
+                    ? $base->add($value)   // když je záporný
+                    : $base->sub($value);  // když je kladný
+                $value = $dt->format('H:i');
+
+            }
+            return (string) $value;
         };
         $this->sortString = function():string{
             return $this->column;
