@@ -85,26 +85,14 @@ class ColumnEntity
         $this->getColumnCallback = function (ActiveRow $activeRow, bool $original = false): string {
             $value = $activeRow[$this->column];
             if($value instanceof \DateInterval){
-                $base = new \DateTimeImmutable('1970-01-01 00:00:00');
-
-                $dt = $value->invert
-                    ? $base->add($value)   // když je záporný
-                    : $base->sub($value);  // když je kladný
-                $value = $dt->format('H:i');
-
+                $value = (new \DateTimeImmutable('1970-01-01 00:00:00'))->add($value)->format('H:i');
             }
             return (string) $value;
         };
         $this->getColumnExportCallback = function (ActiveRow $activeRow): string {
             $value = $activeRow[$this->column];
             if($value instanceof \DateInterval){
-                $base = new \DateTimeImmutable('1970-01-01 00:00:00');
-
-                $dt = $value->invert
-                    ? $base->add($value)   // když je záporný
-                    : $base->sub($value);  // když je kladný
-                $value = $dt->format('H:i');
-
+                $value = (new \DateTimeImmutable('1970-01-01 00:00:00'))->add($value)->format('H:i');
             }
             return (string) $value;
         };
