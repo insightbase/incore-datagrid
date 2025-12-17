@@ -22,7 +22,7 @@ class FilterEntity
 
     public function getInputLabel(string $name):?Html
     {
-        if($this->type === FilterTypeEnum::Input){
+        if($this->type === FilterTypeEnum::Select){
             return null;
         }
         $html = Html::el('label')->for($name)->setText($this->label);
@@ -33,7 +33,14 @@ class FilterEntity
     {
         $html = match($this->type){
             FilterTypeEnum::Input => Html::el('input')->type('text')->placeholder($this->label)->class('filterInput')->setText($default),
-            FilterTypeEnum::Select => Html::el('select')->class('filterInput'),
+            FilterTypeEnum::Select => (function() use ($name):Html {
+                $select = Html::el('select')->class('filterInput');
+                $select->addHtml(Html::el('option')->setText($this->getLabel()));
+                foreach($this->values as $key => $value){
+                    $select->addHtml(Html::el('option')->value($key)->setText($value));
+                }
+                return $select;
+            })(),
             FilterTypeEnum::Checkbox => Html::el('input')->type('checkbox')->class('checkbox filterInput')->checked($default === 'true'),
         };
 
