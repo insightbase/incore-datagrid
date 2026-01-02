@@ -75,7 +75,7 @@ class ColumnEntity
         $this->getInlineEditIdCallback = function (ActiveRow $row): int {
             return $row['id'];
         };
-        $this->getRowCallback = function (ActiveRow $activeRow): ActiveRow {
+        $this->getRowCallback = function (ActiveRow $activeRow): ?ActiveRow {
             foreach ($this->ref as $ref) {
                 $activeRow = $activeRow->ref($ref);
             }

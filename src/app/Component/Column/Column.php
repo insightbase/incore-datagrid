@@ -58,6 +58,9 @@ class Column extends Control
     public function getRow(ActiveRow $activeRow, bool $original = false, bool $toEditor = false): string
     {
         $row = ($this->columnEntity->getGetRowCallback())($activeRow);
+        if($row === null){
+            return '';
+        }
         $value = ($this->columnEntity->getColumnCallback())($row, $original);
         if($toEditor){
             try{
