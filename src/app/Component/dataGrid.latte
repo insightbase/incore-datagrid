@@ -126,7 +126,7 @@
                             {/if}
                             {* Show left ellipsis if needed *}
                             {if $rangeStart > 2}
-                                <span class="btn">...</span>
+                                <span class="btn"><i class="ki-outline ki-dots-horizontal"></i></span>
                             {/if}
                             {* Show middle pages *}
                             {for $interalPage = $rangeStart; $interalPage <= $rangeEnd; $interalPage++}
@@ -134,7 +134,7 @@
                             {/for}
                             {* Show right ellipsis if needed *}
                             {if $rangeEnd < $totalPages - 1}
-                                <span class="btn">...</span>
+                                <span class="btn"><i class="ki-outline ki-dots-horizontal"></i></span>
                             {/if}
                             {* Always show last page *}
                             {if $totalPages > 1}
