@@ -115,9 +115,31 @@
                             <a n:href="setPage, $paginator->getPage() - 1" n:class="'btn ajax', $paginator->isFirst() ? 'disabled'" {if $paginator->isFirst()}disabled=""{/if}>
                                 <i class="ki-outline ki-black-left rtl:transform rtl:rotate-180"></i>
                             </a>
-                            {for $interalPage = 1; $interalPage <= $paginator->getPageCount(); $interalPage++}
-                                <a n:href="setPage, $interalPage" n:class="'btn ajax', $interalPage === $paginator->getPage() ? 'active disabled'" {if $interalPage === $paginator->getPage()}disabled=""{/if}>{$interalPage}</a>
+                            {var $currentPage = $paginator->getPage()}
+                            {var $totalPages = $paginator->getPageCount()}
+                            {var $delta = 2}
+                            {var $rangeStart = max(2, $currentPage - $delta)}
+                            {var $rangeEnd = min($totalPages - 1, $currentPage + $delta)}
+                            {* Always show first page *}
+                            {if $totalPages >= 1}
+                                <a n:href="setPage, 1" n:class="'btn ajax', 1 === $currentPage ? 'active disabled'" {if 1 === $currentPage}disabled=""{/if}>1</a>
+                            {/if}
+                            {* Show left ellipsis if needed *}
+                            {if $rangeStart > 2}
+                                <span class="btn">...</span>
+                            {/if}
+                            {* Show middle pages *}
+                            {for $interalPage = $rangeStart; $interalPage <= $rangeEnd; $interalPage++}
+                                <a n:href="setPage, $interalPage" n:class="'btn ajax', $interalPage === $currentPage ? 'active disabled'" {if $interalPage === $currentPage}disabled=""{/if}>{$interalPage}</a>
                             {/for}
+                            {* Show right ellipsis if needed *}
+                            {if $rangeEnd < $totalPages - 1}
+                                <span class="btn">...</span>
+                            {/if}
+                            {* Always show last page *}
+                            {if $totalPages > 1}
+                                <a n:href="setPage, $totalPages" n:class="'btn ajax', $totalPages === $currentPage ? 'active disabled'" {if $totalPages === $currentPage}disabled=""{/if}>{$totalPages}</a>
+                            {/if}
                             <a n:href="setPage, $paginator->getPage() + 1" n:class="'btn ajax', $paginator->isLast() ? 'disabled'" {if $paginator->isLast()}disabled=""{/if}>
                                 <i class="ki-outline ki-black-right rtl:transform rtl:rotate-180"></i>
                             </a>
