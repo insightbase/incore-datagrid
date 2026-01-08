@@ -1,8 +1,9 @@
 {templateType App\Component\Datagrid\DataGridTemplate}
 {import $basicFormFile}
+
 <div class="dataGrid">
 {snippet dataGrid}
-    <div class="card card-grid min-w-full" n:snippet="content">
+    <div class="card card-grid w-full" n:snippet="content">
         <div class="card-header flex-wrap gap-2">
             <h3 class="card-title font-medium text-sm">
                 {if $dataGridEntity->getHeaderTitle() === null}
@@ -27,7 +28,7 @@
             </div>
         </div>
 
-        <div class="card-body">
+        <div class="card-body container-fixed">
             <div n:class="'scrollable-x-auto'" >
                 <table n:class="'table table-auto table-border'">
                     <thead>
@@ -43,7 +44,7 @@
                             </a>
                         </th>
                     {/foreach}
-                    <th n:if="count($menus) > 0">
+                    <th n:if="count($menus) > 0" class="sticky right-0 bg-white z-10 min-w-[100px]">
                         {_'column_action'}
                     </th>
                     </thead>
@@ -70,8 +71,8 @@
                                     </td>
                                 {/foreach}
 
-                                <td n:if="count($menus) > 0 || count($dataGridEntity->getCustomMenu()) > 0">
-                                    <div class="flex items-center">
+                                <td n:if="count($menus) > 0 || count($dataGridEntity->getCustomMenu()) > 0" class="sticky right-0 bg-white z-10 min-w-[100px]">
+                                    <div class="flex items-center justify-center px-2">
                                         {foreach $dataGridEntity->getCustomMenu() as $customMenu}
                                             {$customMenu->render($activeRow)}
                                         {/foreach}
