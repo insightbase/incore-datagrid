@@ -2,6 +2,7 @@
 
 namespace App\Component\Datagrid;
 
+use AllowDynamicProperties;
 use App\Component\Datagrid\Column\Column;
 use App\Component\Datagrid\Entity\DataGridEntity;
 use App\Component\Datagrid\Menu\Custom\CustomMenu;
@@ -14,6 +15,7 @@ use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\Paginator;
 
+#[AllowDynamicProperties]
 class DataGridTemplate extends Template
 {
     public Selection $selection;
@@ -50,4 +52,5 @@ class DataGridTemplate extends Template
     public string $columnId;
     public string $inlineModalHeader = '';
     public ?string $sortColumn;
+    public int $menuWidth;
 }

@@ -44,7 +44,7 @@
                             </a>
                         </th>
                     {/foreach}
-                    <th n:if="count($menus) > 0" class="sticky right-0 bg-white z-10 min-w-[100px]">
+                    <th n:if="count($menus) > 0 || count($dataGridEntity->getCustomMenu()) > 0" class="sticky right-0 bg-white z-10 text-center" style="width: {$menuWidth}px">
                         {_'column_action'}
                     </th>
                     </thead>
@@ -71,7 +71,7 @@
                                     </td>
                                 {/foreach}
 
-                                <td n:if="count($menus) > 0 || count($dataGridEntity->getCustomMenu()) > 0" class="sticky right-0 bg-white z-10 min-w-[100px]">
+                                <td n:if="count($menus) > 0 || count($dataGridEntity->getCustomMenu()) > 0" class="sticky right-0 bg-white z-10" style="width: {$menuWidth}px">
                                     <div class="flex items-center justify-center px-2">
                                         {foreach $dataGridEntity->getCustomMenu() as $customMenu}
                                             {$customMenu->render($activeRow)}

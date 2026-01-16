@@ -311,6 +311,11 @@ class DataGrid extends Control
         $this->template->dataGridEntity = $this->dataGridEntity;
         $this->template->filter = $this->filter;
         $this->template->sortColumn = $this->sortColumn;
+        $menuWidth = (count($this->dataGridEntity->getCustomMenu()) + (count($this->menus) > 0 ? 1 : 0)) * 32;
+        if($menuWidth < 80){
+            $menuWidth = 80;
+        }
+        $this->template->menuWidth = $menuWidth;
         $this->template->basicFormFile = $this->parameterBag->rootDir . '/vendor/incore/core/src/app/UI/Accessory/Admin/Form/basic-form.latte';
         foreach ($this->languageModel->getToTranslate() as $language) {
             if ($language->is_default) {
