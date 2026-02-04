@@ -125,10 +125,8 @@ class DataGrid extends Control
 
     public function handleChangeFilter(string $name, string $value):void
     {
-        $this->init();
         $this->filter[$name] = $value;
-        $callback = $this->dataGridEntity->getFilters()[$name]->getOnChangeCallback();
-        $callback($this->selection, $value);
+        $this->init();
         $this->redrawControl();
     }
 
