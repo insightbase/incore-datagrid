@@ -33,11 +33,11 @@ class FilterEntity
     {
         $html = match($this->type){
             FilterTypeEnum::Input => Html::el('input')->type('text')->placeholder($this->label)->class('filterInput')->setText($default),
-            FilterTypeEnum::Select => (function() use ($name):Html {
+            FilterTypeEnum::Select => (function() use ($name, $default):Html {
                 $select = Html::el('select')->class('filterInput');
-                $select->addHtml(Html::el('option')->setText($this->getLabel()));
+                $select->addHtml(Html::el('option')->value('')->setText($this->getLabel()));
                 foreach($this->values as $key => $value){
-                    $select->addHtml(Html::el('option')->value($key)->setText($value));
+                    $select->addHtml(Html::el('option')->value($key)->setText($value)->setAttribute('selected', $key === $default));
                 }
                 return $select;
             })(),
