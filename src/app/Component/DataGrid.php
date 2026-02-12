@@ -106,6 +106,12 @@ class DataGrid extends Control
         $this->redrawControl('inlineModalHeader');
     }
 
+    public function setUseDefaultOrderCallback(callable|\Closure $useDefaultOrderCallback): self
+    {
+        $this->useDefaultOrderCallback = $useDefaultOrderCallback;
+        return $this;
+    }
+
     protected function createComponentFormInlineEdit():Multiplier{
         return new Multiplier(function(string $columnId):Form{
             $this->init();
