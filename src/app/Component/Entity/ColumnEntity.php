@@ -2,6 +2,7 @@
 
 namespace App\Component\Datagrid\Entity;
 
+use App\Component\Datagrid\DataGrid;
 use App\Component\Datagrid\InlineEdit;
 use App\Component\Datagrid\SortDirEnum;
 use Nette\Database\Table\ActiveRow;
@@ -62,6 +63,10 @@ class ColumnEntity
      * @var ?callable
      */
     protected $sortString = null;
+    /**
+     * @var callable
+     */
+    protected $showCallback;
 
     public function __construct(
         public string $column,
@@ -69,6 +74,9 @@ class ColumnEntity
         public bool $sort = false,
         public SortDirEnum $sortDir = SortDirEnum::ASC,
     ) {
+        $this->showCallback = function(DataGrid $grid):bool{
+            return true;
+        };
         $this->inlineEditInputCallback = function(ActiveRow $row):Html{
             return Html::el('input')->type('text')->class('input')->value('xxxx');
         };
@@ -285,6 +293,17 @@ class ColumnEntity
     public function setLink(?string $link): self
     {
         $this->link = $link;
+        return $this;
+    }
+
+    public function getShowCallback(): callable|\Closure
+    {
+        return $this->showCallback;
+    }
+
+    public function setShowCallback(callable|\Closure $showCallback): self
+    {
+        $this->showCallback = $showCallback;
         return $this;
     }
 }

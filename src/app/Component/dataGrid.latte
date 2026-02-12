@@ -34,7 +34,7 @@
                     <thead>
                     <th n:if="$dataGridEntity->isOrdering()"></th>
                     {foreach $columns as $column}
-                        <th n:class="$column->getColumnEntity()->getClassHeader()">
+                        <th n:class="$column->getColumnEntity()->getClassHeader()" n:if="($column->getColumnEntity()->getShowCallback())($control)">
                             <a n:tag-if="$column->isEnabledSort()" n:class="'sort ajax', $column->getId() === $sortColumn && $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? 'asc', $column->getId() === $sortColumn && $sortDir === App\Component\Datagrid\SortDirEnum::DESC->value ? 'desc'" n:href="setSort, $column->getId(), $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? App\Component\Datagrid\SortDirEnum::DESC->value : App\Component\Datagrid\SortDirEnum::ASC->value">
                                 <span class="sort-label text-gray-700 font-normal">
                                     {$column->getLabel()}
@@ -65,7 +65,7 @@
                                 </td>
 
                                 {foreach $columns as $column}
-                                    <td n:snippet="column-{$activeRow->id}-{$column->getId()}" n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit', $column->getColumnEntity()->getClass()">
+                                    <td n:snippet="column-{$activeRow->id}-{$column->getId()}" n:class="'text-gray-800 font-normal', $column->getColumnEntity()->getInlineEditCallback() !== null ? 'inlineEdit', $column->getColumnEntity()->getClass()" n:if="($column->getColumnEntity()->getShowCallback())($control)">
                                         <span class="dataHolder" data-inline-edit-url-refresh="{$control->link('refreshModal', $column->getId(), $activeRow['id'])}" data-inline-edit-url="{$control->link('inlineEdit', $column->getId(), $column->getInlineEditId($activeRow), 'xxxx')}" data-value="{$column->getRow($activeRow, true)|noescape}" data-inline-input="{($column->getColumnEntity()->getInlineEditInputCallback())($activeRow)}"></span>
                                         {$column->render($activeRow)}
                                     </td>
