@@ -112,6 +112,11 @@ class DataGrid extends Control
         return $this;
     }
 
+    public function getDataGridEntity(): DataGridEntity
+    {
+        return $this->dataGridEntity;
+    }
+
     protected function createComponentFormInlineEdit():Multiplier{
         return new Multiplier(function(string $columnId):Form{
             $this->init();
