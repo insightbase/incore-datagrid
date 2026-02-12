@@ -18,7 +18,6 @@ use Nette\Utils\Strings;
 class Column extends Control
 {
     private bool $enabledSort = true;
-    protected array $beforeRender = [];
 
     public function __construct(
         private readonly string              $column,
@@ -35,6 +34,9 @@ class Column extends Control
 
     public function render(ActiveRow $activeRow):void
     {
+        foreach($this->columnEntity->beforeRender as $callback){
+            $callback($this, $activeRow);
+        }
         $this->template->column = $this;
         $this->template->activeRow = ($this->columnEntity->getGetRowCallback())($activeRow);
         $this->template->activeRowOrig = $activeRow;
