@@ -2,6 +2,7 @@
 
 namespace App\Component\Datagrid\Entity;
 
+use App\Component\Datagrid\DataGrid;
 use App\Component\Datagrid\Menu\Custom\CustomMenu;
 use App\Component\Datagrid\SortDirEnum;
 use Nette\Database\Table\Selection;
@@ -45,11 +46,28 @@ class DataGridEntity
      * @var ?callable
      */
     private $customSearchGlobalCallback = null;
+    /**
+     * @var callable
+     */
+    private $useDefaultOrderCallback;
+
+    public function setUseDefaultOrderCallback(callable|\Closure $useDefaultOrderCallback): self
+    {
+        $this->useDefaultOrderCallback = $useDefaultOrderCallback;
+        return $this;
+    }
 
     public function __construct()
     {
         $this->getCountCallback = function (Selection $model): int {
             return $model->count('*');
+        };
+        $this->useDefaultOrderCallback = function(DataGrid $dataGrid, Selection $selection):void{
+            $orderString = $dataGrid->getDataGridEntity()->getDefaultOrder();
+            if($dataGrid->getDataGridEntity()->getDefaultOrderDir() !== null){
+                $orderString .= ' '.$dataGrid->getDataGridEntity()->getDefaultOrderDir()->value;
+            }
+            $selection->order($orderString);
         };
     }
 
@@ -230,5 +248,10 @@ class DataGridEntity
     public function getCustomMenu(): array
     {
         return $this->customMenu;
+    }
+
+    public function getUseDefaultOrderCallback(): callable|\Closure
+    {
+        return $this->useDefaultOrderCallback;
     }
 }

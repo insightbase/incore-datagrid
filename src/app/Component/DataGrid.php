@@ -58,10 +58,6 @@ class DataGrid extends Control
     #[Persistent]
     public array $filter = [];
     private string $columnId = 'default';
-    /**
-     * @var callable
-     */
-    private $useDefaultOrderCallback;
 
     public function __construct(
         private readonly Selection           $selection,
@@ -75,13 +71,7 @@ class DataGrid extends Control
         private readonly FormFactory         $formFactory,
         private readonly Language            $languageModel,
     ) {
-        $this->useDefaultOrderCallback = function(DataGrid $dataGrid, Selection $selection):void{
-            $orderString = $dataGrid->dataGridEntity->getDefaultOrder();
-            if($dataGrid->dataGridEntity->getDefaultOrderDir() !== null){
-                $orderString .= ' '.$dataGrid->dataGridEntity->getDefaultOrderDir()->value;
-            }
-            $selection->order($orderString);
-        };
+
     }
 
     public function handleSortValue(string $values):void{
@@ -104,12 +94,6 @@ class DataGrid extends Control
         $this->template->inlineModalHeader = $column->getColumnEntity()->inlineEdit->getHeader($id);
         $this->redrawControl('inlineModalBody');
         $this->redrawControl('inlineModalHeader');
-    }
-
-    public function setUseDefaultOrderCallback(callable|\Closure $useDefaultOrderCallback): self
-    {
-        $this->useDefaultOrderCallback = $useDefaultOrderCallback;
-        return $this;
     }
 
     public function getDataGridEntity(): DataGridEntity
@@ -305,7 +289,7 @@ class DataGrid extends Control
         if ('' !== $this->sort) {
             $this->selection->order($this->sort.' '.$this->sortDir);
         }elseif($this->dataGridEntity->getDefaultOrder() !== null){
-            ($this->useDefaultOrderCallback)($this, $this->selection);
+            ($this->dataGridEntity->getUseDefaultOrderCallback())($this, $this->selection);
         }
 
         $paginator = new Paginator();
