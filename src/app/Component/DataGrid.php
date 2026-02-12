@@ -58,6 +58,10 @@ class DataGrid extends Control
     #[Persistent]
     public array $filter = [];
     private string $columnId = 'default';
+    /**
+     * @var callable
+     */
+    private $useDefaultOrderCallback;
 
     public function __construct(
         private readonly Selection           $selection,
@@ -70,7 +74,15 @@ class DataGrid extends Control
         private readonly ImageControlFactory $imageControlFactory,
         private readonly FormFactory         $formFactory,
         private readonly Language            $languageModel,
-    ) {}
+    ) {
+        $this->useDefaultOrderCallback = function(DataGrid $dataGrid, Selection $selection):void{
+            $orderString = $dataGrid->dataGridEntity->getDefaultOrder();
+            if($dataGrid->dataGridEntity->getDefaultOrderDir() !== null){
+                $orderString .= ' '.$dataGrid->dataGridEntity->getDefaultOrderDir()->value;
+            }
+            $selection->order($orderString);
+        };
+    }
 
     public function handleSortValue(string $values):void{
         $iterator = 1;
@@ -282,11 +294,7 @@ class DataGrid extends Control
         if ('' !== $this->sort) {
             $this->selection->order($this->sort.' '.$this->sortDir);
         }elseif($this->dataGridEntity->getDefaultOrder() !== null){
-            $orderString = $this->dataGridEntity->getDefaultOrder();
-            if($this->dataGridEntity->getDefaultOrderDir() !== null){
-                $orderString .= ' '.$this->dataGridEntity->getDefaultOrderDir()->value;
-            }
-            $this->selection->order($orderString);
+            ($this->useDefaultOrderCallback)($this, $this->selection);
         }
 
         $paginator = new Paginator();
