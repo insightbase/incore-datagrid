@@ -32,7 +32,7 @@
             <div n:class="'scrollable-x-auto'" >
                 <table n:class="'table table-auto table-border'">
                     <thead>
-                    <th n:if="$dataGridEntity->isOrdering()"></th>
+                    <th n:if="$isOrderingActive"></th>
                     {foreach $columns as $column}
                         <th n:class="$column->getColumnEntity()->getClassHeader()" n:if="($column->getColumnEntity()->getShowCallback())($control, $column)">
                             <a n:tag-if="$column->isEnabledSort()" n:class="'sort ajax', $column->getId() === $sortColumn && $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? 'asc', $column->getId() === $sortColumn && $sortDir === App\Component\Datagrid\SortDirEnum::DESC->value ? 'desc'" n:href="setSort, $column->getId(), $sortDir === App\Component\Datagrid\SortDirEnum::ASC->value ? App\Component\Datagrid\SortDirEnum::DESC->value : App\Component\Datagrid\SortDirEnum::ASC->value">
@@ -48,19 +48,19 @@
                         {_'column_action'}
                     </th>
                     </thead>
-                    <tbody n:class="$dataGridEntity->isOrdering() ? 'draggable-zone'"  data-url-sort="{$control->link('sortValue!', 'xxxxxx')}">
+                    <tbody n:class="$isOrderingActive ? 'draggable-zone'"  data-url-sort="{$control->link('sortValue!', 'xxxxxx')}">
 
                     {snippetArea bodyArea}
                         {foreach $selection as $activeRow}
                             {var $clickUrl = $dataGridEntity->getRowClickUrl($activeRow)}
                             <tr n:class="
-                                $dataGridEntity->isOrdering() ? 'draggable',
+                                $isOrderingActive ? 'draggable',
                                 $clickUrl ? 'row-hover clickable-row cursor-pointer'
                             "
                                 data-id="{$activeRow->id}"
                                 {if $clickUrl}data-href="{$clickUrl}"{/if}>
 
-                                <td n:if="$dataGridEntity->isOrdering()" class="w-[20px] draggable-handle">
+                                <td n:if="$isOrderingActive" class="w-[20px] draggable-handle">
                                     <i class="ki-filled ki-burger-menu-6"></i>
                                 </td>
 
@@ -111,7 +111,7 @@
                 </div>
                 <div class="flex items-center gap-4 order-1 md:order-2">
                     <span data-datatable-info="true">{_'%itemFrom%-%itemTo% z %count%', 'itemFrom' => $paginator->getOffset() + 1, 'itemTo' => ($paginator->getOffset() + $paginator->getItemsPerPage() < $paginator->getItemCount() ? $paginator->getOffset() + $paginator->getItemsPerPage() : $paginator->getItemCount()), 'count' =>$paginator->getItemCount()}</span>
-                    <div class="pagination">
+                    <div class="pagination" n:if="!$isOrderingActive">
                         <div class="pagination">
                             <a n:href="setPage, $paginator->getPage() - 1" n:class="'btn ajax', $paginator->isFirst() ? 'disabled'" {if $paginator->isFirst()}disabled=""{/if}>
                                 <i class="ki-outline ki-black-left rtl:transform rtl:rotate-180"></i>

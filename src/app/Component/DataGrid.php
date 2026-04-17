@@ -121,6 +121,9 @@ class DataGrid extends Control
 
             $form->onSuccess[] = function(Form $form, array $values):void{
                 $this->init();
+                if ($values['columnId'] === 'default') {
+                    return;
+                }
                 $column = $this->getColumnById($values['columnId']);
                 $column->getColumnEntity()->inlineEdit->getOnSuccessCallback()($values);
                 $this->redrawControl('dataGrid');
@@ -292,11 +295,18 @@ class DataGrid extends Control
             ($this->dataGridEntity->getUseDefaultOrderCallback())($this, $this->selection);
         }
 
+        $isOrderingActive = $this->dataGridEntity->isOrdering()
+            && '' === $this->sort
+            && '' === $this->globalSearch
+            && [] === array_filter($this->filter, static fn($v) => $v !== null && $v !== '' && $v !== []);
+
         $paginator = new Paginator();
         $paginator->setItemCount($itemsCount);
-        $paginator->setItemsPerPage($this->dataGridEntity->getItemsPerPage());
-        $paginator->setPage($this->page);
-        $this->selection->limit($paginator->getLength(), $paginator->getOffset());
+        $paginator->setItemsPerPage($isOrderingActive ? max($itemsCount, 1) : $this->dataGridEntity->getItemsPerPage());
+        $paginator->setPage($isOrderingActive ? 1 : $this->page);
+        if (!$isOrderingActive) {
+            $this->selection->limit($paginator->getLength(), $paginator->getOffset());
+        }
 
         $this->template->selection = $this->selection;
         $this->template->columns = $this->columns;
@@ -312,6 +322,7 @@ class DataGrid extends Control
         $this->template->dataGridEntity = $this->dataGridEntity;
         $this->template->filter = $this->filter;
         $this->template->sortColumn = $this->sortColumn;
+        $this->template->isOrderingActive = $isOrderingActive;
         $menuWidth = (count($this->dataGridEntity->getCustomMenu()) + (count($this->menus) > 0 ? 1 : 0)) * 32;
         if($menuWidth < 80){
             $menuWidth = 80;

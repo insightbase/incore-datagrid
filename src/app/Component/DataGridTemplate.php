@@ -53,4 +53,5 @@ class DataGridTemplate extends Template
     public string $inlineModalHeader = '';
     public ?string $sortColumn;
     public int $menuWidth;
+    public bool $isOrderingActive;
 }
