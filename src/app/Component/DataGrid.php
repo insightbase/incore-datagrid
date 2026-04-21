@@ -125,6 +125,9 @@ class DataGrid extends Control
                     return;
                 }
                 $column = $this->getColumnById($values['columnId']);
+                if ($column === null) {
+                    return;
+                }
                 $column->getColumnEntity()->inlineEdit->getOnSuccessCallback()($values);
                 $this->redrawControl('dataGrid');
                 $this->redrawControl('inlineModalBody');
