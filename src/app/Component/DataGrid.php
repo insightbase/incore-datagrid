@@ -208,7 +208,7 @@ class DataGrid extends Control
                     $this->redrawControl('dataGrid');
                 }
                 if ($dto->redrawOneColumn) {
-                    $this->template->selection = $this->selection->where('id', $id);
+                    $this->template->selection = $this->selection->where($this->selection->getName().'.id', $id);
                     $this->template->columns = [$column];
 
                     $this->redrawControl('bodyArea');
