@@ -76,8 +76,9 @@ class DataGrid extends Control
 
     public function handleSortValue(string $values):void{
         $iterator = 1;
+        $orderingColumn = $this->dataGridEntity->getOrderingColumn();
         foreach(explode(',', $values) as $id){
-            $this->selection->get($id)->update(['position' => $iterator]);
+            $this->selection->get($id)->update([$orderingColumn => $iterator]);
             $iterator++;
         }
         $this->redrawControl('dataGrid');

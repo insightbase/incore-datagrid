@@ -30,6 +30,7 @@ class DataGridEntity
      */
     private array $filters = [];
     private bool $ordering = false;
+    private string $orderingColumn = 'position';
     private ?string $defaultOrder = null;
     private ?SortDirEnum $defaultOrderDir = null;
     private ?string $redrawSnippetAfterOrdering = null;
@@ -167,6 +168,17 @@ class DataGridEntity
     public function setOrdering(bool $ordering = true): self
     {
         $this->ordering = $ordering;
+        return $this;
+    }
+
+    public function getOrderingColumn(): string
+    {
+        return $this->orderingColumn;
+    }
+
+    public function setOrderingColumn(string $orderingColumn): self
+    {
+        $this->orderingColumn = $orderingColumn;
         return $this;
     }
 
