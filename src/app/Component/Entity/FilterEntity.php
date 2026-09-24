@@ -33,7 +33,7 @@ class FilterEntity
     public function getInput(string $name, ?string $default):Html
     {
         $html = match($this->type){
-            FilterTypeEnum::Input => Html::el('input')->type('text')->placeholder($this->label)->class('filterInput')->setText($default),
+            FilterTypeEnum::Input => Html::el('input')->type('text')->placeholder($this->label)->class('filterInput')->value($default),
             FilterTypeEnum::Select => (function() use ($name, $default):Html {
                 $select = Html::el('select')->class('filterInput');
                 $select->addHtml(Html::el('option')->value('')->setText($this->getLabel()));
