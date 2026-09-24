@@ -274,9 +274,12 @@ class DataGrid extends Control
                 ;
             }
 
-            foreach($this->dataGridEntity->getFilters() as $filter){
+            foreach($this->dataGridEntity->getFilters() as $key => $filter){
                 if($filter->getOnChangeCallback() === null){
                     throw new FilterHasNotSetChangeCallbackException($filter->getLabel());
+                }
+                if($filter->getDefaultValue() !== null && !array_key_exists($key, $this->filter)){
+                    $this->filter[$key] = $filter->getDefaultValue();
                 }
             }
 

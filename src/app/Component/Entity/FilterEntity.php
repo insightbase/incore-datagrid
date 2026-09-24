@@ -11,6 +11,7 @@ class FilterEntity
      * @var null|callable
      */
     private $onChangeCallback = null;
+    private ?string $defaultValue = null;
 
     public function __construct(
         private readonly string         $label,
@@ -37,7 +38,7 @@ class FilterEntity
                 $select = Html::el('select')->class('filterInput');
                 $select->addHtml(Html::el('option')->value('')->setText($this->getLabel()));
                 foreach($this->values as $key => $value){
-                    $select->addHtml(Html::el('option')->value($key)->setText($value)->setAttribute('selected', $key === $default));
+                    $select->addHtml(Html::el('option')->value($key)->setText($value)->setAttribute('selected', (string) $key === $default));
                 }
                 return $select;
             })(),
@@ -64,5 +65,16 @@ class FilterEntity
     public function getLabel(): string
     {
         return $this->label;
+    }
+
+    public function getDefaultValue(): ?string
+    {
+        return $this->defaultValue;
+    }
+
+    public function setDefaultValue(?string $defaultValue): self
+    {
+        $this->defaultValue = $defaultValue;
+        return $this;
     }
 }
