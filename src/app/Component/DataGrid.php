@@ -17,6 +17,7 @@ use App\Component\Image\ImageControlFactory;
 use App\Core\Admin\Enum\DefaultSnippetsEnum;
 use App\Model\Admin\Language;
 use App\Model\Admin\Module;
+use App\Model\Entity\ModuleEntity;
 use App\UI\Accessory\Admin\Form\Form;
 use App\UI\Accessory\Admin\Form\FormFactory;
 use App\UI\Accessory\ParameterBag;
@@ -25,6 +26,7 @@ use Nette\Application\Attributes\Persistent;
 use Nette\Application\Responses\FileResponse;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Multiplier;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\Localization\Translator;
 use Nette\Utils\FileSystem;
@@ -58,6 +60,10 @@ class DataGrid extends Control
     #[Persistent]
     public array $filter = [];
     private string $columnId = 'default';
+    /**
+     * @var ?ModuleEntity
+     */
+    private ?ActiveRow $module = null;
 
     public function __construct(
         private readonly Selection           $selection,
@@ -331,7 +337,7 @@ class DataGrid extends Control
         $this->template->menus = $this->menus;
         $this->template->globalSearchText = $this->globalSearch;
         $this->template->isEnabledExport = $this->dataGridEntity->isEnableExport();
-        $this->template->module = $this->moduleModel->getByPresenter($this->getPresenter()->getName());
+        $this->template->module = $this->module = $this->moduleModel->getByPresenter($this->getPresenter()->getName());
         $this->template->presenter = $this->getPresenter();
         $this->template->dataGridEntity = $this->dataGridEntity;
         $this->template->filter = $this->filter;
@@ -355,6 +361,27 @@ class DataGrid extends Control
         $this->template->setTranslator($this->translator);
         $this->template->setFile(__DIR__.'/dataGrid.latte');
         $this->template->render();
+    }
+
+    /**
+     * Položka s customLinkCallback se zobrazí vždy (bez kontroly oprávnění i showCallback).
+     */
+    public function isMenuVisible(Menu $menu, ActiveRow $activeRow): bool
+    {
+        return $menu->getEntity()->getCustomLinkCallback() !== null
+            || $this->getPresenter()->getUser()->isAllowed($this->module?->system_name, $menu->plink)
+            && ($menu->getEntity()->getShowCallback())($activeRow);
+    }
+
+    /**
+     * @return Menu[]
+     */
+    public function getVisibleMenus(ActiveRow $activeRow): array
+    {
+        return array_values(array_filter(
+            $this->menus,
+            fn(Menu $menu): bool => $this->isMenuVisible($menu, $activeRow),
+        ));
     }
 
     private function iconv(array $data): array
