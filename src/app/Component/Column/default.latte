@@ -2,8 +2,13 @@
 
 {var string $rowText = $column->getRow($activeRowOrig)}
 
+{var bool $isClickColumn = $column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null}
+{var bool $canClick = $isClickColumn && $control->getParent()->isAllowed($column->getColumnEntity()->getPrivilege(), (int) $activeRow['id'])}
+
     <a href="{$presenter->link($column->getColumnEntity()->getLink(), $activeRow['id'])}" n:tag-if="$column->getColumnEntity()->getLink() !== null">
-    <a href="{$control->getParent()->link('columnClick', $column->getId(), $activeRow['id'])}" n:tag-if="$column->getColumnEntity() instanceof App\Component\Datagrid\Entity\BooleanColumnEntity && $column->getColumnEntity()->getOnClickCallback() !== null && $control->getParent()->isAllowed($column->getColumnEntity()->getPrivilege())" class="ajax" data-naja-history="off">
+    <a href="{$control->getParent()->link('columnClick', $column->getId(), $activeRow['id'])}" n:tag-if="$canClick" class="ajax" data-naja-history="off">
+        {* bez oprávnění je přepínač neaktivní - inert blokuje klik i fokus i u vlastního HTML z getColumnCallback *}
+        <span n:tag-if="$isClickColumn && !$canClick" class="dataGridDisabled"><span n:tag-if="$isClickColumn && !$canClick" inert>
         <span class="text">
             {if $column->getColumnEntity() instanceof App\Component\Datagrid\Entity\ImageColumnEntity}
                 {control image, (int)$rowText, 100, 100}
@@ -23,6 +28,7 @@
                 {/if}
             {/if}
         </span>
+        </span></span>
         <button data-modal-toggle="#{$column->getColumnEntity()->modalId}" class="inlineEditOpenModal" n:if="$column->getColumnEntity()->inlineEdit?->isEnabled($activeRow) && $control->getParent()->isAllowed($column->getColumnEntity()->getPrivilege())">
             <i class="ki-filled ki-exit-right-corner"></i>
         </button>
