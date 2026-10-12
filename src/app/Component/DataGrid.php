@@ -15,6 +15,7 @@ use App\Component\EditorJs\EditorJsFacade;
 use App\Component\Image\ImageControl;
 use App\Component\Image\ImageControlFactory;
 use App\Core\Admin\Enum\DefaultSnippetsEnum;
+use App\Core\Admin\ItemPermission\ItemResource;
 use App\Model\Admin\Language;
 use App\Model\Admin\Module;
 use App\Model\Entity\ModuleEntity;
@@ -64,6 +65,7 @@ class DataGrid extends Control
      * @var ?ModuleEntity
      */
     private ?ActiveRow $module = null;
+    private bool $isModuleLoaded = false;
 
     public function __construct(
         private readonly Selection           $selection,
@@ -81,10 +83,21 @@ class DataGrid extends Control
     }
 
     public function handleSortValue(string $values):void{
+        $this->init();
+        $privilege = $this->dataGridEntity->getOrderingPrivilege();
+        if (!$this->dataGridEntity->isOrdering() || !$this->isAllowed($privilege)) {
+            $this->flashNoPermission();
+            return;
+        }
+        $ids = array_map('intval', explode(',', $values));
+        // jen řádky, které grid opravdu zobrazuje - selection->get() by hledal v celé tabulce
+        $rows = (clone $this->selection)->where($this->selection->getName().'.id', $ids)->fetchAll();
         $iterator = 1;
         $orderingColumn = $this->dataGridEntity->getOrderingColumn();
-        foreach(explode(',', $values) as $id){
-            $this->selection->get($id)->update([$orderingColumn => $iterator]);
+        foreach($ids as $id){
+            if (isset($rows[$id]) && $this->isAllowed($privilege, $id)) {
+                $rows[$id]->update([$orderingColumn => $iterator]);
+            }
             $iterator++;
         }
         $this->redrawControl('dataGrid');
@@ -133,6 +146,10 @@ class DataGrid extends Control
                 }
                 $column = $this->getColumnById($values['columnId']);
                 if ($column === null) {
+                    return;
+                }
+                if (!$this->isAllowed($column->getColumnEntity()->getPrivilege(), (int) $values['id'])) {
+                    $this->flashNoPermission();
                     return;
                 }
                 $column->getColumnEntity()->inlineEdit->getOnSuccessCallback()($values);
@@ -206,6 +223,11 @@ class DataGrid extends Control
         $this->init();
         $column = $this->getColumnById($columnId);
         if (null !== $column && null !== $column->getColumnEntity()->getInlineEditCallback()) {
+            // id určuje getInlineEditIdCallback - kontrolu položky jde udělat jen u číselného id řádku
+            if (!$this->isAllowed($column->getColumnEntity()->getPrivilege(), ctype_digit($id) ? (int) $id : null)) {
+                $this->flashNoPermission();
+                return;
+            }
             try {
                 $dto = ($column->getColumnEntity()->getInlineEditCallback())($id, $value);
                 if (!$dto instanceof ReturnInlineEditCallback) {
@@ -235,7 +257,11 @@ class DataGrid extends Control
         $this->init();
 
         $column = $this->getColumnById($columnId);
-        if (null !== $column && $column->getColumnEntity() instanceof BooleanColumnEntity) {
+        if (null !== $column && $column->getColumnEntity() instanceof BooleanColumnEntity && null !== $column->getColumnEntity()->getOnClickCallback()) {
+            if (!$this->isAllowed($column->getColumnEntity()->getPrivilege(), $id)) {
+                $this->flashNoPermission();
+                return;
+            }
             try {
                 ($column->getColumnEntity()->getOnClickCallback())($id);
                 $this->redrawControl('dataGrid');
@@ -316,6 +342,7 @@ class DataGrid extends Control
         }
 
         $isOrderingActive = $this->dataGridEntity->isOrdering()
+            && $this->isAllowed($this->dataGridEntity->getOrderingPrivilege())
             && '' === $this->sort
             && '' === $this->globalSearch
             && [] === array_filter($this->filter, static fn($v) => $v !== null && $v !== '' && $v !== []);
@@ -337,7 +364,7 @@ class DataGrid extends Control
         $this->template->menus = $this->menus;
         $this->template->globalSearchText = $this->globalSearch;
         $this->template->isEnabledExport = $this->dataGridEntity->isEnableExport();
-        $this->template->module = $this->module = $this->moduleModel->getByPresenter($this->getPresenter()->getName());
+        $this->template->module = $this->getModule();
         $this->template->presenter = $this->getPresenter();
         $this->template->dataGridEntity = $this->dataGridEntity;
         $this->template->filter = $this->filter;
@@ -369,8 +396,44 @@ class DataGrid extends Control
     public function isMenuVisible(Menu $menu, ActiveRow $activeRow): bool
     {
         return $menu->getEntity()->getCustomLinkCallback() !== null
-            || $this->getPresenter()->getUser()->isAllowed($this->module?->system_name, $menu->plink)
+            || $this->getPresenter()->getUser()->isAllowed($this->getModule()?->system_name, $menu->plink)
             && ($menu->getEntity()->getShowCallback())($activeRow);
+    }
+
+    /**
+     * Oprávnění zapisujících funkcí gridu (přepínač, rychlá úprava, řazení) k modulu gridu.
+     * Grid mimo modul se nekontroluje. S $rowId se ověří i omezení role na vybrané položky
+     * (položku k řádku určí DataGridEntity::setItemIdCallback()).
+     */
+    public function isAllowed(string $privilege, ?int $rowId = null): bool
+    {
+        $module = $this->getModule();
+        if (null === $module) {
+            return true;
+        }
+        $itemId = null === $rowId ? null : $this->dataGridEntity->getItemId($rowId);
+        $resource = null === $itemId ? $module->system_name : new ItemResource($module->system_name, $itemId);
+
+        return $this->getPresenter()->getUser()->isAllowed($resource, $privilege);
+    }
+
+    /**
+     * @return ?ModuleEntity
+     */
+    private function getModule(): ?ActiveRow
+    {
+        if (!$this->isModuleLoaded) {
+            $this->module = $this->moduleModel->getByPresenter($this->getPresenter()->getName());
+            $this->isModuleLoaded = true;
+        }
+
+        return $this->module;
+    }
+
+    private function flashNoPermission(): void
+    {
+        $this->getPresenter()->flashMessage($this->translator->translate('flash_noPermission'), 'error');
+        $this->getPresenter()->redrawControl(DefaultSnippetsEnum::Flashes->value);
     }
 
     /**

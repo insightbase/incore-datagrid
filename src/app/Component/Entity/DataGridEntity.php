@@ -5,6 +5,7 @@ namespace App\Component\Datagrid\Entity;
 use App\Component\Datagrid\DataGrid;
 use App\Component\Datagrid\Menu\Custom\CustomMenu;
 use App\Component\Datagrid\SortDirEnum;
+use App\Model\Enum\PrivilegeEnum;
 use Nette\Database\Table\Selection;
 
 class DataGridEntity
@@ -31,6 +32,10 @@ class DataGridEntity
     private array $filters = [];
     private bool $ordering = false;
     private string $orderingColumn = 'position';
+    /** privilegium modulu potřebné pro ruční řazení */
+    private string $orderingPrivilege = PrivilegeEnum::Edit->value;
+    /** ID řádku -> ID položky pro omezení role na položky; null callback = ID řádku, vrácené null = nekontrolovat */
+    private ?\Closure $itemIdCallback = null;
     private ?string $defaultOrder = null;
     private ?SortDirEnum $defaultOrderDir = null;
     private ?string $redrawSnippetAfterOrdering = null;
@@ -179,6 +184,28 @@ class DataGridEntity
     public function setOrderingColumn(string $orderingColumn): self
     {
         $this->orderingColumn = $orderingColumn;
+        return $this;
+    }
+
+    public function getOrderingPrivilege(): string
+    {
+        return $this->orderingPrivilege;
+    }
+
+    public function setOrderingPrivilege(string $orderingPrivilege): self
+    {
+        $this->orderingPrivilege = $orderingPrivilege;
+        return $this;
+    }
+
+    public function getItemId(int $rowId): ?int
+    {
+        return null === $this->itemIdCallback ? $rowId : ($this->itemIdCallback)($rowId);
+    }
+
+    public function setItemIdCallback(?\Closure $itemIdCallback): self
+    {
+        $this->itemIdCallback = $itemIdCallback;
         return $this;
     }
 

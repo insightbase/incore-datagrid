@@ -5,6 +5,7 @@ namespace App\Component\Datagrid\Entity;
 use App\Component\Datagrid\DataGrid;
 use App\Component\Datagrid\InlineEdit;
 use App\Component\Datagrid\SortDirEnum;
+use App\Model\Enum\PrivilegeEnum;
 use Nette\Database\Table\ActiveRow;
 use Nette\Utils\Html;
 
@@ -51,6 +52,8 @@ class ColumnEntity
     protected $getRowCallback;
     public string $modalId = 'datagrid-inline-edit';
     public ?InlineEdit $inlineEdit = null;
+    /** privilegium modulu potřebné pro rychlou úpravu a přepínač (BooleanColumnEntity) */
+    protected string $privilege = PrivilegeEnum::Edit->value;
     /**
      * @var callable
      */
@@ -243,6 +246,18 @@ class ColumnEntity
     public function setNoEscape(bool $noEscape = true): self
     {
         $this->noEscape = $noEscape;
+        return $this;
+    }
+
+    public function getPrivilege(): string
+    {
+        return $this->privilege;
+    }
+
+    public function setPrivilege(string $privilege): static
+    {
+        $this->privilege = $privilege;
+
         return $this;
     }
 
