@@ -23,7 +23,8 @@ class FilterEntity
 
     public function getInputLabel(string $name):?Html
     {
-        if($this->type === FilterTypeEnum::Select){
+        // select and text input show the label as their first option / placeholder
+        if($this->type !== FilterTypeEnum::Checkbox){
             return null;
         }
         $html = Html::el('label')->for($name)->setText($this->label);
