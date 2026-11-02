@@ -27,7 +27,7 @@ class FilterEntity
         if($this->type !== FilterTypeEnum::Checkbox){
             return null;
         }
-        $html = Html::el('label')->for($name)->setText($this->label);
+        $html = Html::el('label')->for($name)->class('cursor-pointer')->style('white-space', 'nowrap')->setText($this->label);
         return $html;
     }
 
@@ -43,7 +43,8 @@ class FilterEntity
                 }
                 return $select;
             })(),
-            FilterTypeEnum::Checkbox => Html::el('input')->type('checkbox')->class('checkbox filterInput')->checked($default === 'true'),
+            // Metronic roztahuje inputy uvnitř .input (flex-grow: 1) - checkbox musí zůstat čtvercový
+            FilterTypeEnum::Checkbox => Html::el('input')->type('checkbox')->class('checkbox filterInput')->style('flex-grow', '0')->style('margin-inline-start', '.375rem')->checked($default === 'true'),
         };
 
         $html->name($name);
