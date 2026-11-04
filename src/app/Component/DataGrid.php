@@ -38,6 +38,8 @@ use Nette\Utils\Paginator;
  */
 class DataGrid extends Control
 {
+    private const int ExportBatchSize = 1000;
+
     #[Persistent]
     public string $sort = '';
     #[Persistent]
@@ -184,7 +186,7 @@ class DataGrid extends Control
             $columns[] = $column->getLabel();
         }
         fputcsv($handle, $this->iconv($columns), ",", '"', "\\");
-        foreach ($this->selection as $row) {
+        foreach ($this->getExportRows() as $row) {
             $data = [];
             foreach ($this->columns as $column) {
                 $data[] = $column->getRowExport($row);
@@ -445,6 +447,46 @@ class DataGrid extends Control
             $this->menus,
             fn(Menu $menu): bool => $this->isMenuVisible($menu, $activeRow),
         ));
+    }
+
+    /**
+     * @return iterable<ActiveRow>
+     */
+    private function getExportRows(): iterable
+    {
+        $prefetchCallbacks = $this->dataGridEntity->getExportPrefetchCallbacks();
+        if ($prefetchCallbacks === []) {
+            yield from $this->selection;
+
+            return;
+        }
+
+        $primary = $this->selection->getPrimary();
+        if (!is_string($primary)) {
+            throw new \LogicException('Export prefetch requires a table with a single-column primary key.');
+        }
+        $primaryColumn = $this->selection->getName().'.'.$primary;
+        $lastId = 0;
+        do {
+            $rows = array_values(
+                (clone $this->selection)
+                    ->where($primaryColumn.' > ?', $lastId)
+                    ->order($primaryColumn)
+                    ->limit(self::ExportBatchSize)
+                    ->fetchAll()
+            );
+            if ($rows === []) {
+                return;
+            }
+            $ids = array_map(static fn(ActiveRow $row): int => (int) $row->getPrimary(), $rows);
+            foreach ($prefetchCallbacks as $prefetchCallback) {
+                $prefetchCallback($ids);
+            }
+            foreach ($rows as $row) {
+                yield $row;
+            }
+            $lastId = end($ids);
+        } while (count($rows) === self::ExportBatchSize);
     }
 
     private function iconv(array $data): array

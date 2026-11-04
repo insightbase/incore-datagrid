@@ -27,6 +27,10 @@ class DataGridEntity
     private $getCountCallback;
     private bool $enableExport = false;
     /**
+     * @var list<callable(list<int>): void>
+     */
+    private array $exportPrefetchCallbacks = [];
+    /**
      * @var FilterEntity[]
      */
     private array $filters = [];
@@ -158,6 +162,27 @@ class DataGridEntity
         $this->enableExport = $enableExport;
 
         return $this;
+    }
+
+    /**
+     * Registers a callback that receives the row IDs of each export batch, so column export callbacks
+     * can read data loaded in bulk. Registering one switches the export to batches ordered by primary key.
+     *
+     * @param callable(list<int>): void $callback
+     */
+    public function addExportPrefetchCallback(callable $callback): self
+    {
+        $this->exportPrefetchCallbacks[] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @return list<callable(list<int>): void>
+     */
+    public function getExportPrefetchCallbacks(): array
+    {
+        return $this->exportPrefetchCallbacks;
     }
 
     public function getFilters(): array
