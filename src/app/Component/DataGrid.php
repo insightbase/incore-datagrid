@@ -450,7 +450,7 @@ class DataGrid extends Control
     private function iconv(array $data): array
     {
         foreach ($data as $key => $value) {
-            $data[$key] = iconv('UTF-8', 'WINDOWS-1250', $value);
+            $data[$key] = iconv('UTF-8', 'WINDOWS-1250//TRANSLIT//IGNORE', $value);
         }
 
         return $data;
