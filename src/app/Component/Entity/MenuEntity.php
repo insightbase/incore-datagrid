@@ -7,6 +7,8 @@ use Nette\Database\Table\ActiveRow;
 class MenuEntity
 {
     private ?string $icon = null;
+    /** ACL resource for the visibility check, null = module of the grid */
+    private ?string $resource = null;
 
     /**
      * @var callable
@@ -71,6 +73,19 @@ class MenuEntity
     public function setCustomLinkCallback(?callable $customLinkCallback): self
     {
         $this->customLinkCallback = $customLinkCallback;
+        return $this;
+    }
+
+    public function getResource(): ?string
+    {
+        return $this->resource;
+    }
+
+    /** checks the privilege (plink) against another ACL resource than the module of the grid */
+    public function setResource(?string $resource): self
+    {
+        $this->resource = $resource;
+
         return $this;
     }
 }

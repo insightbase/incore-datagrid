@@ -394,11 +394,12 @@ class DataGrid extends Control
 
     /**
      * Položka s customLinkCallback se zobrazí vždy (bez kontroly oprávnění i showCallback).
+     * Oprávnění se ověřuje k modulu gridu, nebo k resource z MenuEntity::setResource().
      */
     public function isMenuVisible(Menu $menu, ActiveRow $activeRow): bool
     {
         return $menu->getEntity()->getCustomLinkCallback() !== null
-            || $this->getPresenter()->getUser()->isAllowed($this->getModule()?->system_name, $menu->plink)
+            || $this->getPresenter()->getUser()->isAllowed($menu->getEntity()->getResource() ?? $this->getModule()?->system_name, $menu->plink)
             && ($menu->getEntity()->getShowCallback())($activeRow);
     }
 
